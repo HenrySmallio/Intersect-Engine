@@ -528,38 +528,38 @@ namespace Intersect.Server.Entities
                 var tile = new TileHelper(MapId, X, Y);
                 switch (moveDir)
                 {
-                    case 0: //Up
+                    case (byte)Directions.Up:
                         yOffset--;
 
                         break;
-                    case 1: //Down
+                    case (byte)Directions.Down:
                         yOffset++;
 
                         break;
-                    case 2: //Left
+                    case (byte)Directions.Left:
                         xOffset--;
 
                         break;
-                    case 3: //Right
+                    case (byte)Directions.Right:
                         xOffset++;
 
                         break;
-                    case 4: //NW
+                    case (byte)Directions.UpLeft:
                         yOffset--;
                         xOffset--;
 
                         break;
-                    case 5: //NE
+                    case (byte)Directions.UpRight:
                         yOffset--;
                         xOffset++;
 
                         break;
-                    case 6: //SW
+                    case (byte)Directions.DownLeft:
                         yOffset++;
                         xOffset--;
 
                         break;
-                    case 7: //SE
+                    case (byte)Directions.DownRight:
                         yOffset++;
                         xOffset++;
 
@@ -903,21 +903,36 @@ namespace Intersect.Server.Entities
                                             {
                                                 switch (dir)
                                                 {
-                                                    case 0:
+                                                    case (sbyte)Directions.Up:
                                                         dir = 1;
 
                                                         break;
-                                                    case 1:
+                                                    case (sbyte)Directions.Down:
                                                         dir = 0;
 
                                                         break;
-                                                    case 2:
+                                                    case (sbyte)Directions.Left:
                                                         dir = 3;
 
                                                         break;
-                                                    case 3:
+                                                    case (sbyte)Directions.Right:
                                                         dir = 2;
 
+                                                        break;
+                                                    case (sbyte)Directions.UpLeft:
+                                                        dir = 5;
+
+                                                        break;
+                                                    case (sbyte)Directions.UpRight:
+                                                        dir = 4;
+
+                                                        break;
+                                                    case (sbyte)Directions.DownLeft:
+                                                        dir = 7;
+
+                                                        break;
+                                                    case (sbyte)Directions.DownRight:
+                                                        dir = 6;
                                                         break;
                                                 }
                                             }
@@ -996,21 +1011,36 @@ namespace Intersect.Server.Entities
                                     var dir = DirToEnemy(tempTarget);
                                     switch (dir)
                                     {
-                                        case 0:
+                                        case (byte)Directions.Up:
                                             dir = 1;
 
                                             break;
-                                        case 1:
+                                        case (byte)Directions.Down:
                                             dir = 0;
 
                                             break;
-                                        case 2:
+                                        case (byte)Directions.Left:
                                             dir = 3;
 
                                             break;
-                                        case 3:
+                                        case (byte)Directions.Right:
                                             dir = 2;
 
+                                            break;
+                                        case (byte)Directions.UpLeft:
+                                            dir = 5;
+
+                                            break;
+                                        case (byte)Directions.UpRight:
+                                            dir = 4;
+
+                                            break;
+                                        case (byte)Directions.DownLeft:
+                                            dir = 7;
+
+                                            break;
+                                        case (byte)Directions.DownRight:
+                                            dir = 6;
                                             break;
                                     }
 
@@ -1081,7 +1111,7 @@ namespace Intersect.Server.Entities
                         }
                         else if (Base.Movement == (int)NpcMovement.TurnRandomly)
                         {
-                            ChangeDir((byte)Randomization.Next(0, Options.Instance.Sprites.Directions));
+                            ChangeDir((byte)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections));
                             LastRandomMove = Timing.Global.Milliseconds + Randomization.Next(1000, 3000);
 
                             return;
@@ -1090,7 +1120,7 @@ namespace Intersect.Server.Entities
                         var i = Randomization.Next(0, 1);
                         if (i == 0)
                         {
-                            i = Randomization.Next(0, Options.Instance.Sprites.Directions);
+                            i = Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
                             if (CanMove(i) == -1)
                             {
                                 //check if NPC is snared or stunned

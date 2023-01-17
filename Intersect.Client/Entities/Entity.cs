@@ -46,6 +46,8 @@ namespace Intersect.Client.Entities
         //Combat Status
         public long CastTime { get; set; } = 0;
 
+        protected List<int[]> AdjacentTiles = new List<int[]>();
+
         public bool IsCasting => CastTime > Timing.Global.Milliseconds;
 
         public bool IsDashing => Dashing != null;
@@ -62,6 +64,8 @@ namespace Intersect.Client.Entities
         public float elapsedtime { get; set; } //to be removed
 
         private Guid[] _equipment = new Guid[Options.EquipmentSlots.Count];
+
+        private readonly float PythagoreanMultiplier = (float) Math.Sqrt(2);
 
         public Guid[] Equipment
         {
@@ -267,14 +271,14 @@ namespace Intersect.Client.Entities
 
         public Pointf Origin => LatestMap == default ? Pointf.Empty : mOrigin;
 
-        protected virtual Pointf CenterOffset => (Texture == default) ? Pointf.Empty : (Pointf.UnitY * Texture.Center.Y / Options.Instance.Sprites.Directions);
+        protected virtual Pointf CenterOffset => (Texture == default) ? Pointf.Empty : (Pointf.UnitY * Texture.Center.Y / Options.Instance.Sprites.DirectionFrameRows);
 
         public Pointf Center => Origin - CenterOffset;
 
         public byte Dir
         {
             get => mDir;
-            set => mDir = (byte)((value + Options.Instance.Sprites.Directions) % Options.Instance.Sprites.Directions);
+            set => mDir = (byte)((value + Options.Instance.MapOpts.MovementDirections) % Options.Instance.MapOpts.MovementDirections);
         }
 
         public virtual string TransformedSprite
@@ -523,6 +527,10 @@ namespace Intersect.Client.Entities
         public virtual float GetMovementTime()
         {
             var time = 1000f / (float) (1 + Math.Log(Stat[(int) Stats.Speed]));
+            if (Dir > 3)
+            {
+                time *= PythagoreanMultiplier;
+            }
             if (IsBlocking)
             {
                 time += time * (float)Options.BlockingSlow;
@@ -620,10 +628,11 @@ namespace Intersect.Client.Entities
             }
             else if (IsMoving)
             {
+                float deplacementTime = ecTime * Options.TileHeight / GetMovementTime();
                 switch (Dir)
                 {
-                    case 0:
-                        OffsetY -= (float)ecTime * (float)Options.TileHeight / GetMovementTime();
+                    case (byte)Directions.Up:
+                        OffsetY -= deplacementTime;
                         OffsetX = 0;
                         if (OffsetY < 0)
                         {
@@ -632,8 +641,8 @@ namespace Intersect.Client.Entities
 
                         break;
 
-                    case 1:
-                        OffsetY += (float)ecTime * (float)Options.TileHeight / GetMovementTime();
+                    case (byte)Directions.Down:
+                        OffsetY += deplacementTime;
                         OffsetX = 0;
                         if (OffsetY > 0)
                         {
@@ -642,8 +651,8 @@ namespace Intersect.Client.Entities
 
                         break;
 
-                    case 2:
-                        OffsetX -= (float)ecTime * (float)Options.TileHeight / GetMovementTime();
+                    case (byte)Directions.Left:
+                        OffsetX -= deplacementTime;
                         OffsetY = 0;
                         if (OffsetX < 0)
                         {
@@ -652,9 +661,66 @@ namespace Intersect.Client.Entities
 
                         break;
 
-                    case 3:
-                        OffsetX += (float)ecTime * (float)Options.TileHeight / GetMovementTime();
+                    case (byte)Directions.Right:
+                        OffsetX += deplacementTime;
                         OffsetY = 0;
+                        if (OffsetX > 0)
+                        {
+                            OffsetX = 0;
+                        }
+
+                        break;
+                    case (byte)Directions.UpLeft:
+                        OffsetY -= deplacementTime;
+                        OffsetX -= deplacementTime;
+                        if (OffsetY < 0)
+                        {
+                            OffsetY = 0;
+                        }
+
+                        if (OffsetX < 0)
+                        {
+                            OffsetX = 0;
+                        }
+
+                        break;
+                    case (byte)Directions.UpRight:
+                        OffsetY -= deplacementTime;
+                        OffsetX += deplacementTime;
+                        if (OffsetY < 0)
+                        {
+                            OffsetY = 0;
+                        }
+
+                        if (OffsetX > 0)
+                        {
+                            OffsetX = 0;
+                        }
+
+                        break;
+                    case (byte)Directions.DownLeft:
+                        OffsetY += deplacementTime;
+                        OffsetX -= deplacementTime;
+                        if (OffsetY > 0)
+                        {
+                            OffsetY = 0;
+                        }
+
+                        if (OffsetX < 0)
+                        {
+                            OffsetX = 0;
+                        }
+
+
+                        break;
+                    case (byte)Directions.DownRight:
+                        OffsetY += deplacementTime;
+                        OffsetX += deplacementTime;
+                        if (OffsetY > 0)
+                        {
+                            OffsetY = 0;
+                        }
+
                         if (OffsetX > 0)
                         {
                             OffsetX = 0;
@@ -989,10 +1055,10 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            var d = (Dir + (Options.Instance.Sprites.Directions - 1)) % Options.Instance.Sprites.Directions;
+            var d = GetSpriteDirection();
 
             var frameWidth = texture.GetWidth() / SpriteFrames;
-            var frameHeight = texture.GetHeight() / Options.Instance.Sprites.Directions;
+            var frameHeight = texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows;
 
             var frame = SpriteFrame;
             if (Options.AnimatedSprites.Contains(sprite.ToLower()))
@@ -1017,9 +1083,9 @@ namespace Intersect.Client.Entities
             WorldPos = destRectangle;
 
             //Order the layers of paperdolls and sprites
-            for (var z = 0; z < Options.PaperdollOrder[Dir].Count; z++)
+            for (var z = 0; z < Options.PaperdollOrder[d].Count; z++)
             {
-                var paperdoll = Options.PaperdollOrder[Dir][z];
+                var paperdoll = Options.PaperdollOrder[d][z];
                 var equipSlot = Options.EquipmentSlots.IndexOf(paperdoll);
 
                 //Check for player
@@ -1059,6 +1125,13 @@ namespace Intersect.Client.Entities
                     }
                 }
             }
+        }
+
+        private int GetSpriteDirection()
+        {
+            int[] dTable = { 3, 0, 1, 2, 1, 2, 1, 2 };
+            var d = dTable[Dir];
+            return d;
         }
 
         public void DrawChatBubbles()
@@ -1120,10 +1193,10 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            var d = (Dir + (Options.Instance.Sprites.Directions -1)) % Options.Instance.Sprites.Directions;
+            var d = GetSpriteDirection();
 
             var frameWidth = paperdollTex.GetWidth() / spriteFrames;
-            var frameHeight = paperdollTex.GetHeight() / Options.Instance.Sprites.Directions;
+            var frameHeight = paperdollTex.GetHeight() / Options.Instance.Sprites.DirectionFrameRows;
 
             var frame = SpriteFrame;
             if (SpriteAnimation == SpriteAnimations.Normal)
@@ -1172,11 +1245,11 @@ namespace Intersect.Client.Entities
 
             if (overrideHeight > -1)
             {
-                y -= overrideHeight / Options.Instance.Sprites.Directions;
+                y -= overrideHeight / Options.Instance.Sprites.DirectionFrameRows;
             }
             else if (Texture != null)
             {
-                y -= Texture.Height / Options.Instance.Sprites.Directions;
+                y -= Texture.Height / Options.Instance.Sprites.DirectionFrameRows;
             }
 
             return y;
@@ -1502,7 +1575,7 @@ namespace Intersect.Client.Entities
             var sprite = Globals.ContentManager.GetTexture(TextureType.Entity, Sprite);
             if (sprite != null)
             {
-                y -= sprite.Height / Options.Instance.Sprites.Directions;
+                y -= sprite.Height / Options.Instance.Sprites.DirectionFrameRows;
                 y -= boundingTeture.Height + 2;
             }
 
@@ -1931,10 +2004,43 @@ namespace Intersect.Client.Entities
 
             var yOffset = originY - targetY;
             var xOffset = originX - targetX;
-            var xDir = xOffset == 0 ? newDir : (xOffset < 0 ? (byte)Directions.Right : (byte)Directions.Left);
-            var yDir = yOffset == 0 ? newDir : (yOffset < 0 ? (byte)Directions.Down : (byte)Directions.Up);
 
-            newDir = Math.Abs(yOffset) > Math.Abs(xOffset) ? yDir : xDir;
+            if (Options.Instance.MapOpts.DiagonalMovement)
+            {
+                int xDistance = Math.Abs(xOffset);
+                int yDistance = Math.Abs(yOffset);
+
+                newDir = xDistance == yDistance
+                    ? DiagonalDirection(newDir, xOffset, yOffset)
+                    : CrossDirection(newDir, xOffset, yOffset);
+            }
+            else
+            {
+                newDir = CrossDirection(newDir, xOffset, yOffset);
+            }
+
+            byte CrossDirection(byte direction, int xOffset4, int yOffset4)
+            {
+                var xDir = xOffset4 == 0 ? direction : (xOffset4 < 0 ? (byte)Directions.Right : (byte)Directions.Left);
+                var yDir = yOffset4 == 0 ? direction : (yOffset4 < 0 ? (byte)Directions.Down : (byte)Directions.Up);
+                direction = Math.Abs(yOffset4) > Math.Abs(xOffset4) ? yDir : xDir;
+
+                return direction;
+            }
+
+            byte DiagonalDirection(byte direction, int xOffset8, int yOffset8)
+            {
+                if (xOffset8 > 0)
+                {
+                    direction = yOffset8 > 0 ? (byte)Directions.UpLeft : (byte)Directions.DownLeft;
+                }
+                else
+                {
+                    direction = yOffset8 > 0 ? (byte)Directions.UpRight : (byte)Directions.DownRight;
+                }
+
+                return direction;
+            }
 
             return newDir;
         }

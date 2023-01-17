@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Intersect.Config
 {
@@ -13,6 +14,17 @@ namespace Intersect.Config
         public int Height = 26;
 
         public int ItemAttributeRespawnTime = 15000;
+
+        /// <summary>
+        /// Defines whether or not diagonal movement is enabled for entities within maps.
+        /// </summary>
+        public bool DiagonalMovement { get; set; } = true;
+
+        /// <summary>
+        /// Number of movement directions available in the game for entities within maps.
+        /// </summary>
+        [JsonIgnore]
+        public int MovementDirections { get; private set; }
 
         public int TileHeight = 32;
 
@@ -38,6 +50,8 @@ namespace Intersect.Config
             {
                 throw new Exception("Config Error: Map size out of bounds! (All values should be > 10 and < 64)");
             }
+
+            MovementDirections = DiagonalMovement ? 8 : 4;
         }
 
     }

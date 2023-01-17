@@ -38,7 +38,7 @@ namespace Intersect.Client.Entities
             //Determine Direction
             if (mAttribute.Direction == 0)
             {
-                Dir = (byte)Globals.Random.Next(Options.Instance.Sprites.Directions);
+                Dir = (byte)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
             }
             else
             {
@@ -61,7 +61,7 @@ namespace Intersect.Client.Entities
                             MoveRandomly();
                             break;
                         case 1: //Turn?
-                            Dir = (byte)Globals.Random.Next(Options.Instance.Sprites.Directions);
+                            Dir = (byte)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
                             break;
 
                     }
@@ -75,7 +75,7 @@ namespace Intersect.Client.Entities
 
         private void MoveRandomly()
         {
-            MoveDir = (byte)Globals.Random.Next(Options.Instance.Sprites.Directions);
+            MoveDir = (byte)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
             var tmpX = (sbyte)X;
             var tmpY = (sbyte)Y;
             IEntity blockedBy = null;

@@ -285,11 +285,11 @@ namespace Intersect.Client.Interface.Menu
                         {
                             mCharacterPortrait.SetTextureRect(
                                 0, 0, mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames,
-                                mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
+                                mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
                             );
 
                             mCharacterPortrait.SetSize(
-                                mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
+                                mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
                             );
 
                             mCharacterPortrait.SetPosition(

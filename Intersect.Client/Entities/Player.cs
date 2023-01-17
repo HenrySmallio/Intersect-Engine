@@ -1192,22 +1192,40 @@ namespace Intersect.Client.Entities
             {
                 if (movey < 0)
                 {
-                    Globals.Me.MoveDir = 1;
+                    if (movex < 0 && Options.Instance.MapOpts.DiagonalMovement)
+                    {
+                        Globals.Me.MoveDir = 6; // Down Left
+                    }
+                    else if (movex > 0 && Options.Instance.MapOpts.DiagonalMovement)
+                    {
+                        Globals.Me.MoveDir = 7; // Down Right
+                    }
+                    else
+                    {
+                        Globals.Me.MoveDir = 1; // Down
+                    }
                 }
-
-                if (movey > 0)
+                else if (movey > 0)
                 {
-                    Globals.Me.MoveDir = 0;
+                    if (movex < 0 && Options.Instance.MapOpts.DiagonalMovement)
+                    {
+                        Globals.Me.MoveDir = 4; // Up Left
+                    }
+                    else if (movex > 0 && Options.Instance.MapOpts.DiagonalMovement)
+                    {
+                        Globals.Me.MoveDir = 5; // Up Right
+                    }
+                    else
+                    {
+                        Globals.Me.MoveDir = 0; // Up
+                    }
                 }
-
-                if (movex < 0)
+                else
                 {
-                    Globals.Me.MoveDir = 2;
-                }
-
-                if (movex > 0)
-                {
-                    Globals.Me.MoveDir = 3;
+                    Globals.Me.MoveDir = movex < 0
+                        ? 2
+                        : // Left
+                        3; // Right
                 }
             }
             
@@ -1534,7 +1552,8 @@ namespace Intersect.Client.Entities
 
         public bool TryAttack()
         {
-            if (AttackTimer > Timing.Global.Milliseconds || IsBlocking || (IsMoving && !Options.Instance.PlayerOpts.AllowCombatMovement))
+            if (AttackTimer > Timing.Global.Milliseconds || IsBlocking ||
+                (IsMoving && !Options.Instance.PlayerOpts.AllowCombatMovement))
             {
                 return false;
             }
@@ -1542,49 +1561,95 @@ namespace Intersect.Client.Entities
             int x = Globals.Me.X;
             int y = Globals.Me.Y;
             var map = Globals.Me.MapId;
+
+            CheckAdjacentTiles();
+
             switch (Globals.Me.Dir)
             {
-                case 0:
+                case (byte)Directions.Up:
                     y--;
-
                     break;
-                case 1:
+
+                case (byte)Directions.Down:
                     y++;
-
                     break;
-                case 2:
+
+                case (byte)Directions.Left:
                     x--;
-
                     break;
-                case 3:
-                    x++;
 
+                case (byte)Directions.Right:
+                    x++;
+                    break;
+
+                case (byte)Directions.UpLeft:
+                    y--;
+                    x--;
+                    break;
+
+                case (byte)Directions.UpRight:
+                    y--;
+                    x++;
+                    break;
+
+                case (byte)Directions.DownLeft:
+                    y++;
+                    x--;
+                    break;
+
+                case (byte)Directions.DownRight:
+                    y++;
+                    x++;
                     break;
             }
 
             if (TryGetRealLocation(ref x, ref y, ref map))
             {
+                // Iterate through all entities
                 foreach (var en in Globals.Entities)
                 {
-                    if (en.Value == null)
+                    // Skip if the entity is not within the player's map, is null or is the current player.
+                    if (en.Value == null || en.Value == Globals.Me || en.Value.MapId != map)
                     {
                         continue;
                     }
 
-                    if (en.Value != Globals.Me)
+                    if (TargetBox.MyEntity != null)
                     {
-                        if (en.Value.MapId == map &&
-                            en.Value.X == x &&
-                            en.Value.Y == y &&
-                            en.Value.CanBeAttacked())
+                        AutoTurnToTarget(en.Value);
+                        bool canAttack = false;
+                        for (var index = AdjacentTiles.Count - 1; index >= 0; index--)
                         {
-                            //ATTACKKKKK!!!
-                            PacketSender.SendAttack(en.Key);
-                            AttackTimer = Timing.Global.Milliseconds + CalculateAttackTime();
+                            var hitBox = AdjacentTiles[index];
+                            if (hitBox[0] != en.Value.X || hitBox[1] != en.Value.Y || TargetBox.MyEntity != en.Value)
+                            {
+                                continue;
+                            }
 
-                            return true;
+                            canAttack = true;
+                            break;
                         }
+
+                        if (!canAttack)
+                        {
+                            continue;
+                        }
+
+                        // Attack the targeted entity.
+                        PacketSender.SendAttack(en.Key);
+                        AttackTimer = Timing.Global.Milliseconds + CalculateAttackTime();
+                        return true;
                     }
+
+                    if (en.Value.X != x || en.Value.Y != y)
+                    {
+                        continue;
+                    }
+
+                    // Attack the entity.
+                    PacketSender.SendAttack(en.Key);
+                    AttackTimer = Timing.Global.Milliseconds + CalculateAttackTime();
+                    return true;
                 }
             }
 
@@ -1616,6 +1681,58 @@ namespace Intersect.Client.Entities
             AttackTimer = Timing.Global.Milliseconds + CalculateAttackTime();
 
             return true;
+        }
+
+        private void CheckAdjacentTiles()
+        {
+            AdjacentTiles.Clear(); // Clean up the list before filling it up again !
+            switch (Globals.Me.Dir)
+            {
+                case (byte)Directions.Up:
+                    AdjacentTiles.AddRange(new List<int[]>
+                    {
+                        new[] { X - 1, Y - 1 },
+                        new[] { X + 1, Y - 1 },
+                        new[] { X - 1, Y },
+                        new[] { X + 1, Y },
+                        new[] { X, Y - 1 }
+                    });
+                    break;
+                case (byte)Directions.Down:
+                    AdjacentTiles.AddRange(new List<int[]>
+                    {
+                        new[] { X - 1, Y + 1 },
+                        new[] { X + 1, Y + 1 },
+                        new[] { X - 1, Y },
+                        new[] { X + 1, Y },
+                        new[] { X, Y + 1 },
+                    });
+                    break;
+                case (byte)Directions.Left:
+                case (byte)Directions.UpLeft:
+                case (byte)Directions.DownLeft:
+                    AdjacentTiles.AddRange(new List<int[]>
+                    {
+                        new[] { X - 1, Y - 1 },
+                        new[] { X - 1, Y + 1 },
+                        new[] { X - 1, Y },
+                        new[] { X, Y - 1 },
+                        new[] { X, Y + 1 }
+                    });
+                    break;
+                case (byte)Directions.Right:
+                case (byte)Directions.UpRight:
+                case (byte)Directions.DownRight:
+                    AdjacentTiles.AddRange(new List<int[]>
+                    {
+                        new[] { X + 1, Y - 1 },
+                        new[] { X + 1, Y + 1 },
+                        new[] { X + 1, Y },
+                        new[] { X, Y - 1 },
+                        new[] { X, Y + 1 }
+                    });
+                    break;
+            }
         }
 
         public bool TryGetRealLocation(ref int x, ref int y, ref Guid mapId)
@@ -1977,7 +2094,8 @@ namespace Intersect.Client.Entities
             if (MoveDir > -1 && Globals.EventDialogs.Count == 0)
             {
                 //Try to move if able and not casting spells.
-                if (!IsMoving && MoveTimer < Timing.Global.Milliseconds && (Options.Combat.MovementCancelsCast || !IsCasting))
+                if (!IsMoving && MoveTimer < Timing.Global.Milliseconds &&
+                    (Options.Combat.MovementCancelsCast || !IsCasting))
                 {
                     if (Options.Combat.MovementCancelsCast)
                     {
@@ -1986,7 +2104,7 @@ namespace Intersect.Client.Entities
 
                     switch (MoveDir)
                     {
-                        case 0: // Up
+                        case (byte)Directions.Up:
                             if (IsTileBlocked(X, Y - 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY--;
@@ -1997,7 +2115,7 @@ namespace Intersect.Client.Entities
                             }
 
                             break;
-                        case 1: // Down
+                        case (byte)Directions.Down:
                             if (IsTileBlocked(X, Y + 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY++;
@@ -2008,7 +2126,7 @@ namespace Intersect.Client.Entities
                             }
 
                             break;
-                        case 2: // Left
+                        case (byte)Directions.Left:
                             if (IsTileBlocked(X - 1, Y, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpX--;
@@ -2019,13 +2137,61 @@ namespace Intersect.Client.Entities
                             }
 
                             break;
-                        case 3: // Right
+                        case (byte)Directions.Right:
                             if (IsTileBlocked(X + 1, Y, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpX++;
                                 IsMoving = true;
                                 Dir = 3;
                                 OffsetY = 0;
+                                OffsetX = -Options.TileWidth;
+                            }
+
+                            break;
+                        case (byte)Directions.UpLeft:
+                            if (IsTileBlocked(X - 1, Y - 1, Z, MapId, ref blockedBy) == -1)
+                            {
+                                tmpY--;
+                                tmpX--;
+                                IsMoving = true;
+                                Dir = 4;
+                                OffsetY = Options.TileHeight;
+                                OffsetX = Options.TileWidth;
+                            }
+
+                            break;
+                        case (byte)Directions.UpRight:
+                            if (IsTileBlocked(X + 1, Y - 1, Z, MapId, ref blockedBy) == -1)
+                            {
+                                tmpY--;
+                                tmpX++;
+                                IsMoving = true;
+                                Dir = 5;
+                                OffsetY = Options.TileHeight;
+                                OffsetX = -Options.TileWidth;
+                            }
+
+                            break;
+                        case (byte)Directions.DownLeft:
+                            if (IsTileBlocked(X - 1, Y + 1, Z, MapId, ref blockedBy) == -1)
+                            {
+                                tmpY++;
+                                tmpX--;
+                                IsMoving = true;
+                                Dir = 6;
+                                OffsetY = -Options.TileHeight;
+                                OffsetX = Options.TileWidth;
+                            }
+
+                            break;
+                        case (byte)Directions.DownRight:
+                            if (IsTileBlocked(X + 1, Y + 1, Z, MapId, ref blockedBy) == -1)
+                            {
+                                tmpY++;
+                                tmpX++;
+                                IsMoving = true;
+                                Dir = 7;
+                                OffsetY = -Options.TileHeight;
                                 OffsetX = -Options.TileWidth;
                             }
 
@@ -2560,7 +2726,7 @@ namespace Intersect.Client.Entities
         private void TurnAround()
         {
             // If players hold the 'TurnAround' Control Key and tap to any direction, they will turn on their own axis.
-            for (var direction = 0; direction < Options.Instance.Sprites.Directions; direction++)
+            for (var direction = 0; direction < Options.Instance.MapOpts.MovementDirections; direction++)
             {
                 if (!Controls.KeyDown(Control.TurnAround) || direction != Globals.Me.MoveDir)
                 {

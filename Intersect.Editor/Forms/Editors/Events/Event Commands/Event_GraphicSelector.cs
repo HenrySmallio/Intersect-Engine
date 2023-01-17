@@ -193,7 +193,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
                 {
                     sourceBitmap = new Bitmap(spriteFile);
                     mSpriteWidth = sourceBitmap.Width / Options.Instance.Sprites.NormalFrames;
-                    mSpriteHeight = sourceBitmap.Height / Options.Instance.Sprites.Directions;
+                    mSpriteHeight = sourceBitmap.Height / Options.Instance.Sprites.DirectionFrameRows;
                 }
             }
             else if (cmbGraphicType.SelectedIndex == 2) //Tileset
@@ -219,8 +219,8 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
                     graphics.DrawRectangle(
                         new Pen(System.Drawing.Color.White, 2f),
                         new Rectangle(
-                            mTmpGraphic.X * sourceBitmap.Width / Options.Instance.Sprites.NormalFrames, mTmpGraphic.Y * sourceBitmap.Height / Options.Instance.Sprites.Directions,
-                            sourceBitmap.Width / Options.Instance.Sprites.NormalFrames, sourceBitmap.Height / Options.Instance.Sprites.Directions
+                            mTmpGraphic.X * sourceBitmap.Width / Options.Instance.Sprites.NormalFrames, mTmpGraphic.Y * sourceBitmap.Height / Options.Instance.Sprites.DirectionFrameRows,
+                            sourceBitmap.Width / Options.Instance.Sprites.NormalFrames, sourceBitmap.Height / Options.Instance.Sprites.DirectionFrameRows
                         )
                     );
                 }

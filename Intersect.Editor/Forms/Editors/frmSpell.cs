@@ -552,9 +552,9 @@ namespace Intersect.Editor.Forms.Editors
                     g.DrawImage(
                         src,
                         new Rectangle(
-                            picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.Directions * 2), src.Width / Options.Instance.Sprites.NormalFrames,
-                            src.Height / Options.Instance.Sprites.Directions
-                        ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.Directions), GraphicsUnit.Pixel
+                            picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.DirectionFrameRows * 2), src.Width / Options.Instance.Sprites.NormalFrames,
+                            src.Height / Options.Instance.Sprites.DirectionFrameRows
+                        ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.DirectionFrameRows), GraphicsUnit.Pixel
                     );
 
                     g.Dispose();
@@ -610,9 +610,9 @@ namespace Intersect.Editor.Forms.Editors
                 g.DrawImage(
                     src,
                     new Rectangle(
-                        picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.Directions * 2), src.Width / Options.Instance.Sprites.NormalFrames,
-                        src.Height / Options.Instance.Sprites.Directions
-                    ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.Directions), GraphicsUnit.Pixel
+                        picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.DirectionFrameRows * 2), src.Width / Options.Instance.Sprites.NormalFrames,
+                        src.Height / Options.Instance.Sprites.DirectionFrameRows
+                    ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.DirectionFrameRows), GraphicsUnit.Pixel
                 );
 
                 g.Dispose();

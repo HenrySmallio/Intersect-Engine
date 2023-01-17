@@ -216,13 +216,13 @@ namespace Intersect.Editor.Forms.Editors.Events
                         sourceBitmap,
                         new Rectangle(
                             pnlPreview.Width / 2 - sourceBitmap.Width / Options.Instance.Sprites.NormalFrames / 2,
-                            pnlPreview.Height / 2 - sourceBitmap.Height / Options.Instance.Sprites .Directions / 2, sourceBitmap.Width / Options.Instance.Sprites.NormalFrames,
-                            sourceBitmap.Height / Options.Instance.Sprites.Directions
+                            pnlPreview.Height / 2 - sourceBitmap.Height / Options.Instance.Sprites .DirectionFrameRows / 2, sourceBitmap.Width / Options.Instance.Sprites.NormalFrames,
+                            sourceBitmap.Height / Options.Instance.Sprites.DirectionFrameRows
                         ),
                         new Rectangle(
                             CurrentPage.Graphic.X * sourceBitmap.Width / Options.Instance.Sprites.NormalFrames,
-                            CurrentPage.Graphic.Y * sourceBitmap.Height / Options.Instance.Sprites.Directions, sourceBitmap.Width / Options.Instance.Sprites.NormalFrames,
-                            sourceBitmap.Height / Options.Instance.Sprites.Directions
+                            CurrentPage.Graphic.Y * sourceBitmap.Height / Options.Instance.Sprites.DirectionFrameRows, sourceBitmap.Width / Options.Instance.Sprites.NormalFrames,
+                            sourceBitmap.Height / Options.Instance.Sprites.DirectionFrameRows
                         ), GraphicsUnit.Pixel
                     );
                 }

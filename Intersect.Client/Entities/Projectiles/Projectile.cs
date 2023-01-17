@@ -183,13 +183,17 @@ namespace Intersect.Client.Entities.Projectiles
         {
             switch (direction)
             {
-                case 0: //Up
+                case (byte)Directions.Up:
                     return x;
-                case 1: //Down
+                case (byte)Directions.Down:
                     return -x;
-                case 2: //Left
+                case (byte)Directions.Left:
+                case (byte)Directions.UpLeft:
+                case (byte)Directions.DownLeft:
                     return y;
-                case 3: //Right
+                case (byte)Directions.Right:
+                case (byte)Directions.UpRight:
+                case (byte)Directions.DownRight:
                     return -y;
                 default:
                     return x;
@@ -200,13 +204,17 @@ namespace Intersect.Client.Entities.Projectiles
         {
             switch (direction)
             {
-                case 0: //Up
+                case (byte)Directions.Up:
                     return y;
-                case 1: //Down
+                case (byte)Directions.Down:
                     return -y;
-                case 2: //Left
+                case (byte)Directions.Left:
+                case (byte)Directions.UpLeft:
+                case (byte)Directions.DownLeft:
                     return -x;
-                case 3: //Right
+                case (byte)Directions.Right:
+                case (byte)Directions.UpRight:
+                case (byte)Directions.DownRight:
                     return x;
                 default:
                     return y;
@@ -217,71 +225,159 @@ namespace Intersect.Client.Entities.Projectiles
         {
             switch (entityDir)
             {
-                case 0: //Up
+                case (byte)Directions.Up:
                     return projectionDir;
-                case 1: //Down
+                case (byte)Directions.Down:
                     switch (projectionDir)
                     {
-                        case 0: //Up
+                        case (byte)Directions.Up:
                             return 1;
-                        case 1: //Down
+                        case (byte)Directions.Down:
                             return 0;
-                        case 2: //Left
+                        case (byte)Directions.Left:
                             return 3;
-                        case 3: //Right
+                        case (byte)Directions.Right:
                             return 2;
-                        case 4: //UpLeft
+                        case (byte)Directions.UpLeft:
                             return 7;
-                        case 5: //UpRight
+                        case (byte)Directions.UpRight:
                             return 6;
-                        case 6: //DownLeft
+                        case (byte)Directions.DownLeft:
                             return 5;
-                        case 7: //DownRight
+                        case (byte)Directions.DownRight:
                             return 4;
                         default:
                             return projectionDir;
                     }
-                case 2: //Left
+                case (byte)Directions.Left:
                     switch (projectionDir)
                     {
-                        case 0: //Up
+                        case (byte)Directions.Up:
                             return 2;
-                        case 1: //Down
+                        case (byte)Directions.Down:
                             return 3;
-                        case 2: //Left
+                        case (byte)Directions.Left:
                             return 1;
-                        case 3: //Right
+                        case (byte)Directions.Right:
                             return 0;
-                        case 4: //UpLeft
+                        case (byte)Directions.UpLeft:
                             return 6;
-                        case 5: //UpRight
+                        case (byte)Directions.UpRight:
                             return 4;
-                        case 6: //DownLeft
+                        case (byte)Directions.DownLeft:
                             return 7;
-                        case 7: //DownRight
+                        case (byte)Directions.DownRight:
                             return 5;
                         default:
                             return projectionDir;
                     }
-                case 3: //Right
+                case (byte)Directions.Right:
                     switch (projectionDir)
                     {
-                        case 0: //Up
+                        case (byte)Directions.Up:
                             return 3;
-                        case 1: //Down
+                        case (byte)Directions.Down:
                             return 2;
-                        case 2: //Left
+                        case (byte)Directions.Left:
                             return 0;
-                        case 3: //Right
+                        case (byte)Directions.Right:
                             return 1;
-                        case 4: //UpLeft
+                        case (byte)Directions.UpLeft:
                             return 5;
-                        case 5: //UpRight
+                        case (byte)Directions.UpRight:
                             return 7;
-                        case 6: //DownLeft
+                        case (byte)Directions.DownLeft:
                             return 4;
-                        case 7: //DownRight
+                        case (byte)Directions.DownRight:
                             return 6;
+                        default:
+                            return projectionDir;
+                    }
+                case (byte)Directions.UpLeft:
+                    switch (projectionDir)
+                    {
+                        case (byte)Directions.Up:
+                            return 4;
+                        case (byte)Directions.Down:
+                            return 7;
+                        case (byte)Directions.Left:
+                            return 6;
+                        case (byte)Directions.Right:
+                            return 5;
+                        case (byte)Directions.UpLeft:
+                            return 2;
+                        case (byte)Directions.UpRight:
+                            return 0;
+                        case (byte)Directions.DownLeft:
+                            return 1;
+                        case (byte)Directions.DownRight:
+                            return 3;
+                        default:
+                            return projectionDir;
+                    }
+                case (byte)Directions.UpRight:
+                    switch (projectionDir)
+                    {
+                        case (byte)Directions.Up:
+                            return 5;
+                        case (byte)Directions.Down:
+                            return 6;
+                        case (byte)Directions.Left:
+                            return 4;
+                        case (byte)Directions.Right:
+                            return 7;
+                        case (byte)Directions.UpLeft:
+                            return 0;
+                        case (byte)Directions.UpRight:
+                            return 3;
+                        case (byte)Directions.DownLeft:
+                            return 2;
+                        case (byte)Directions.DownRight:
+                            return 1;
+                        default:
+                            return projectionDir;
+                    }
+                case (byte)Directions.DownLeft:
+                    switch (projectionDir)
+                    {
+                        case (byte)Directions.Up:
+                            return 6;
+                        case (byte)Directions.Down:
+                            return 5;
+                        case (byte)Directions.Left:
+                            return 7;
+                        case (byte)Directions.Right:
+                            return 4;
+                        case (byte)Directions.UpLeft:
+                            return 1;
+                        case (byte)Directions.UpRight:
+                            return 2;
+                        case (byte)Directions.DownLeft:
+                            return 3;
+                        case (byte)Directions.DownRight:
+                            return 0;
+                        default:
+                            return projectionDir;
+                    }
+                case (byte)Directions.DownRight:
+                    switch (projectionDir)
+                    {
+                        case (byte)Directions.Up:
+                            return 7;
+                        case (byte)Directions.Down:
+                            return 4;
+                        case (byte)Directions.Left:
+                            return 5;
+                        case (byte)Directions.Right:
+                            return 6;
+                        case (byte)Directions.UpLeft:
+                            return 3;
+                        case (byte)Directions.UpRight:
+                            return 1;
+                        case (byte)Directions.DownLeft:
+                            return 0;
+                        case (byte)Directions.DownRight:
+                            return 2;
                         default:
                             return projectionDir;
                     }
@@ -292,43 +388,35 @@ namespace Intersect.Client.Entities.Projectiles
 
         private float GetRangeX(int direction, float range)
         {
-            //Left, UpLeft, DownLeft
-            if (direction == 2 || direction == 4 || direction == 6)
+            switch (direction)
             {
-                return -range;
-            }
-
-            //Right, UpRight, DownRight
-            else if (direction == 3 || direction == 5 || direction == 7)
-            {
-                return range;
-            }
-
-            //Up and Down
-            else
-            {
-                return 0;
+                case (byte)Directions.Left:
+                case (byte)Directions.UpLeft:
+                case (byte)Directions.DownLeft:
+                    return -range;
+                case (byte)Directions.Right:
+                case (byte)Directions.UpRight:
+                case (byte)Directions.DownRight:
+                    return range;
+                default: //Up and Down
+                    return 0;
             }
         }
 
         private float GetRangeY(int direction, float range)
         {
-            //Up, UpLeft, UpRight
-            if (direction == 0 || direction == 4 || direction == 5)
+            switch (direction)
             {
-                return -range;
-            }
-
-            //Down, DownLeft, DownRight
-            else if (direction == 1 || direction == 6 || direction == 7)
-            {
-                return range;
-            }
-
-            //Left and Right
-            else
-            {
-                return 0;
+                case (byte)Directions.Up:
+                case (byte)Directions.UpLeft:
+                case (byte)Directions.UpRight:
+                    return -range;
+                case (byte)Directions.Down:
+                case (byte)Directions.DownLeft:
+                case (byte)Directions.DownRight:
+                    return range;
+                default: //Left and Right
+                    return 0;
             }
         }
 

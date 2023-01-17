@@ -1146,24 +1146,36 @@ namespace Intersect.Server.Networking
             var attackingTile = new TileHelper(player.MapId, player.X, player.Y);
             switch (player.Dir)
             {
-                case 0:
+                case (byte)Directions.Up:
                     attackingTile.Translate(0, -1);
-
                     break;
 
-                case 1:
+                case (byte)Directions.Down:
                     attackingTile.Translate(0, 1);
-
                     break;
 
-                case 2:
+                case (byte)Directions.Left:
                     attackingTile.Translate(-1, 0);
-
                     break;
 
-                case 3:
+                case (byte)Directions.Right:
                     attackingTile.Translate(1, 0);
+                    break;
 
+                case (byte)Directions.UpLeft:
+                    attackingTile.Translate(-1, -1);
+                    break;
+
+                case (byte)Directions.UpRight:
+                    attackingTile.Translate(1, -1);
+                    break;
+
+                case (byte)Directions.DownLeft:
+                    attackingTile.Translate(-1, 1);
+                    break;
+
+                case (byte)Directions.DownRight:
+                    attackingTile.Translate(1, 1);
                     break;
             }
 

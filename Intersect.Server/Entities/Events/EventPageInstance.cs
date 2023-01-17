@@ -337,7 +337,7 @@ namespace Intersect.Server.Entities.Events
                         return;
                     }
 
-                    var dir = (byte)Randomization.Next(0, Options.Instance.Sprites.Directions);
+                    var dir = (byte)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
                     if (CanMove(dir) == -1)
                     {
                         Move(dir, Player);
@@ -446,7 +446,7 @@ namespace Intersect.Server.Entities.Events
                                     else
                                     {
                                         //Move Randomly
-                                        moveDir = (byte)Randomization.Next(0, Options.Instance.Sprites.Directions);
+                                        moveDir = (byte)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
                                         if (CanMove(moveDir) == -1)
                                         {
                                             Move(moveDir, forPlayer);
@@ -457,7 +457,7 @@ namespace Intersect.Server.Entities.Events
                                 else
                                 {
                                     //Move Randomly
-                                    moveDir = (byte)Randomization.Next(0, Options.Instance.Sprites.Directions);
+                                    moveDir = (byte)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
                                     if (CanMove(moveDir) == -1)
                                     {
                                         Move(moveDir, forPlayer);
