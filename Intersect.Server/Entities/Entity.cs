@@ -921,7 +921,7 @@ namespace Intersect.Server.Entities
         public virtual float GetMovementTime()
         {
             var time = 1000f / (float) (1 + Math.Log(Stat[(int) Stats.Speed].Value()));
-            if (Dir > 3)
+            if (Dir > (byte)Directions.Right)
             {
                 time *= PythagoreanMultiplier;
             }

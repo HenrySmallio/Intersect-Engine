@@ -661,42 +661,42 @@ namespace Intersect.Client.Networking
 
                 switch (en.Dir)
                 {
-                    case 0:
+                    case (byte)Directions.Up:
                         en.OffsetY = Options.TileWidth;
                         en.OffsetX = 0;
 
                         break;
-                    case 1:
+                    case (byte)Directions.Down:
                         en.OffsetY = -Options.TileWidth;
                         en.OffsetX = 0;
 
                         break;
-                    case 2:
+                    case (byte)Directions.Left:
                         en.OffsetY = 0;
                         en.OffsetX = Options.TileWidth;
 
                         break;
-                    case 3:
+                    case (byte)Directions.Right:
                         en.OffsetY = 0;
                         en.OffsetX = -Options.TileWidth;
 
                         break;
-                    case 4:
+                    case (byte)Directions.UpLeft:
                         en.OffsetY = Options.TileHeight;
                         en.OffsetX = Options.TileWidth;
 
                         break;
-                    case 5:
+                    case (byte)Directions.UpRight:
                         en.OffsetY = Options.TileHeight;
                         en.OffsetX = -Options.TileWidth;
 
                         break;
-                    case 6:
+                    case (byte)Directions.DownLeft:
                         en.OffsetY = -Options.TileHeight;
                         en.OffsetX = Options.TileWidth;
 
                         break;
-                    case 7:
+                    case (byte)Directions.DownRight:
                         en.OffsetY = -Options.TileHeight;
                         en.OffsetX = -Options.TileWidth;
 

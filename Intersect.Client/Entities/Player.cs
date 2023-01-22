@@ -1194,38 +1194,35 @@ namespace Intersect.Client.Entities
                 {
                     if (movex < 0 && Options.Instance.MapOpts.DiagonalMovement)
                     {
-                        Globals.Me.MoveDir = 6; // Down Left
+                        Globals.Me.MoveDir = (byte)Directions.DownLeft;
                     }
                     else if (movex > 0 && Options.Instance.MapOpts.DiagonalMovement)
                     {
-                        Globals.Me.MoveDir = 7; // Down Right
+                        Globals.Me.MoveDir = (byte)Directions.DownRight;
                     }
                     else
                     {
-                        Globals.Me.MoveDir = 1; // Down
+                        Globals.Me.MoveDir = (byte)Directions.Down;
                     }
                 }
                 else if (movey > 0)
                 {
                     if (movex < 0 && Options.Instance.MapOpts.DiagonalMovement)
                     {
-                        Globals.Me.MoveDir = 4; // Up Left
+                        Globals.Me.MoveDir = (byte)Directions.UpLeft;
                     }
                     else if (movex > 0 && Options.Instance.MapOpts.DiagonalMovement)
                     {
-                        Globals.Me.MoveDir = 5; // Up Right
+                        Globals.Me.MoveDir = (byte)Directions.UpRight;
                     }
                     else
                     {
-                        Globals.Me.MoveDir = 0; // Up
+                        Globals.Me.MoveDir = (byte)Directions.Up;
                     }
                 }
                 else
                 {
-                    Globals.Me.MoveDir = movex < 0
-                        ? 2
-                        : // Left
-                        3; // Right
+                    Globals.Me.MoveDir = movex < 0 ? (byte)Directions.Left : (byte)Directions.Right;
                 }
             }
             
@@ -2109,7 +2106,7 @@ namespace Intersect.Client.Entities
                             {
                                 tmpY--;
                                 IsMoving = true;
-                                Dir = 0;
+                                Dir = (byte)Directions.Up;
                                 OffsetY = Options.TileHeight;
                                 OffsetX = 0;
                             }
@@ -2120,7 +2117,7 @@ namespace Intersect.Client.Entities
                             {
                                 tmpY++;
                                 IsMoving = true;
-                                Dir = 1;
+                                Dir = (byte)Directions.Down;
                                 OffsetY = -Options.TileHeight;
                                 OffsetX = 0;
                             }
@@ -2131,7 +2128,7 @@ namespace Intersect.Client.Entities
                             {
                                 tmpX--;
                                 IsMoving = true;
-                                Dir = 2;
+                                Dir = (byte)Directions.Left;
                                 OffsetY = 0;
                                 OffsetX = Options.TileWidth;
                             }
@@ -2142,7 +2139,7 @@ namespace Intersect.Client.Entities
                             {
                                 tmpX++;
                                 IsMoving = true;
-                                Dir = 3;
+                                Dir = (byte)Directions.Right;
                                 OffsetY = 0;
                                 OffsetX = -Options.TileWidth;
                             }
@@ -2154,7 +2151,7 @@ namespace Intersect.Client.Entities
                                 tmpY--;
                                 tmpX--;
                                 IsMoving = true;
-                                Dir = 4;
+                                Dir = (byte)Directions.UpLeft;
                                 OffsetY = Options.TileHeight;
                                 OffsetX = Options.TileWidth;
                             }
@@ -2166,7 +2163,7 @@ namespace Intersect.Client.Entities
                                 tmpY--;
                                 tmpX++;
                                 IsMoving = true;
-                                Dir = 5;
+                                Dir = (byte)Directions.UpRight;
                                 OffsetY = Options.TileHeight;
                                 OffsetX = -Options.TileWidth;
                             }
@@ -2178,7 +2175,7 @@ namespace Intersect.Client.Entities
                                 tmpY++;
                                 tmpX--;
                                 IsMoving = true;
-                                Dir = 6;
+                                Dir = (byte)Directions.DownLeft;
                                 OffsetY = -Options.TileHeight;
                                 OffsetX = Options.TileWidth;
                             }
@@ -2190,7 +2187,7 @@ namespace Intersect.Client.Entities
                                 tmpY++;
                                 tmpX++;
                                 IsMoving = true;
-                                Dir = 7;
+                                Dir = (byte)Directions.DownRight;
                                 OffsetY = -Options.TileHeight;
                                 OffsetX = -Options.TileWidth;
                             }
