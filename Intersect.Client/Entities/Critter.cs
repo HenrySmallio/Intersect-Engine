@@ -38,11 +38,11 @@ namespace Intersect.Client.Entities
             //Determine Direction
             if (mAttribute.Direction == 0)
             {
-                Dir = (byte)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
+                Dir = (Directions)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
             }
             else
             {
-                Dir = (byte)(mAttribute.Direction - 1);
+                Dir = (Directions)(mAttribute.Direction - 1);
             }
 
             //Block Players?
@@ -61,7 +61,7 @@ namespace Intersect.Client.Entities
                             MoveRandomly();
                             break;
                         case 1: //Turn?
-                            Dir = (byte)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
+                            Dir = (Directions)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
                             break;
 
                     }
@@ -75,7 +75,7 @@ namespace Intersect.Client.Entities
 
         private void MoveRandomly()
         {
-            MoveDir = (byte)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
+            MoveDir = (Directions)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
             var tmpX = (sbyte)X;
             var tmpY = (sbyte)Y;
             IEntity blockedBy = null;
@@ -84,47 +84,109 @@ namespace Intersect.Client.Entities
             {
                 switch (MoveDir)
                 {
-                    case 0: // Up
-                        if (IsTileBlocked(X, Y - 1, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && Y > 0 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X, Y - 1)))
+                    case Directions.Up:
+                        if (IsTileBlocked(X, Y - 1, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) ==
+                            -1 && Y > 0 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X, Y - 1)))
                         {
                             tmpY--;
                             IsMoving = true;
-                            Dir = 0;
+                            Dir = Directions.Up;
                             OffsetY = Options.TileHeight;
                             OffsetX = 0;
                         }
 
                         break;
-                    case 1: // Down
-                        if (IsTileBlocked(X, Y + 1, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && Y < Options.MapHeight - 1 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X, Y + 1)))
+                    case Directions.Down:
+                        if (IsTileBlocked(X, Y + 1, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) ==
+                            -1 && Y < Options.MapHeight - 1 &&
+                            (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X, Y + 1)))
                         {
                             tmpY++;
                             IsMoving = true;
-                            Dir = 1;
+                            Dir = Directions.Down;
                             OffsetY = -Options.TileHeight;
                             OffsetX = 0;
                         }
 
                         break;
-                    case 2: // Left
-                        if (IsTileBlocked(X - 1, Y, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && X > 0 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X - 1, Y)))
+                    case Directions.Left:
+                        if (IsTileBlocked(X - 1, Y, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) ==
+                            -1 && X > 0 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X - 1, Y)))
                         {
                             tmpX--;
                             IsMoving = true;
-                            Dir = 2;
+                            Dir = Directions.Left;
                             OffsetY = 0;
                             OffsetX = Options.TileWidth;
                         }
 
                         break;
-                    case 3: // Right
-                        if (IsTileBlocked(X + 1, Y, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && X < Options.MapWidth - 1 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X + 1, Y)))
+                    case Directions.Right:
+                        if (IsTileBlocked(X + 1, Y, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) ==
+                            -1 && X < Options.MapWidth - 1 &&
+                            (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X + 1, Y)))
                         {
                             //If BlockPlayers then make sure there is no player here
                             tmpX++;
                             IsMoving = true;
-                            Dir = 3;
+                            Dir = Directions.Right;
                             OffsetY = 0;
+                            OffsetX = -Options.TileWidth;
+                        }
+
+                        break;
+                    case Directions.UpLeft:
+                        if (IsTileBlocked(X - 1, Y - 1, Z, MapId, ref blockedBy, true, true,
+                                mAttribute.IgnoreNpcAvoids) == -1 &&
+                            (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X - 1, Y - 1)))
+                        {
+                            tmpY--;
+                            tmpX--;
+                            IsMoving = true;
+                            Dir = Directions.UpLeft;
+                            OffsetY = Options.TileHeight;
+                            OffsetX = Options.TileWidth;
+                        }
+
+                        break;
+                    case Directions.UpRight:
+                        if (IsTileBlocked(X + 1, Y - 1, Z, MapId, ref blockedBy, true, true,
+                                mAttribute.IgnoreNpcAvoids) == -1 &&
+                            (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X + 1, Y - 1)))
+                        {
+                            tmpY--;
+                            tmpX++;
+                            IsMoving = true;
+                            Dir = Directions.UpRight;
+                            OffsetY = Options.TileHeight;
+                            OffsetX = -Options.TileWidth;
+                        }
+
+                        break;
+                    case Directions.DownLeft:
+                        if (IsTileBlocked(X - 1, Y + 1, Z, MapId, ref blockedBy, true, true,
+                                mAttribute.IgnoreNpcAvoids) == -1 &&
+                            (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X - 1, Y + 1)))
+                        {
+                            tmpY++;
+                            tmpX--;
+                            IsMoving = true;
+                            Dir = Directions.DownLeft;
+                            OffsetY = -Options.TileHeight;
+                            OffsetX = Options.TileWidth;
+                        }
+
+                        break;
+                    case Directions.DownRight:
+                        if (IsTileBlocked(X + 1, Y + 1, Z, MapId, ref blockedBy, true, true,
+                                mAttribute.IgnoreNpcAvoids) == -1 &&
+                            (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X + 1, Y + 1)))
+                        {
+                            tmpY++;
+                            tmpX++;
+                            IsMoving = true;
+                            Dir = Directions.DownRight;
+                            OffsetY = -Options.TileHeight;
                             OffsetX = -Options.TileWidth;
                         }
 
@@ -143,7 +205,7 @@ namespace Intersect.Client.Entities
                 {
                     if (MoveDir != Dir)
                     {
-                        Dir = (byte)MoveDir;
+                        Dir = MoveDir;
                     }
                 }
             }

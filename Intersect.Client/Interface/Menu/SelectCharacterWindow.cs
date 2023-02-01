@@ -268,11 +268,11 @@ namespace Intersect.Client.Interface.Menu
                 else
                 {
                     mCharacterPortrait.SetTextureRect(
-                        0, 0, mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                        0, 0, mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
                     );
 
                     mCharacterPortrait.SetSize(
-                        mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                        mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
                     );
 
                     mCharacterPortrait.SetPosition(
@@ -302,13 +302,13 @@ namespace Intersect.Client.Interface.Menu
                                 paperdollPortrait
                                     .SetTextureRect(
                                         0, 0, paperdollPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames,
-                                        paperdollPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                                        paperdollPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
                                     );
 
                                 paperdollPortrait
                                     .SetSize(
                                         paperdollPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames,
-                                        paperdollPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                                        paperdollPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
                                     );
 
                                 paperdollPortrait

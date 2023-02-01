@@ -67,6 +67,6 @@ namespace Intersect.Config
         /// Currently, Intersect only supports 4 rows of frames for directions.
         /// </summary>
         [JsonIgnore]
-        public int DirectionFrameRows => 4;
+        public int Directions => 4;
     }
 }

@@ -1547,9 +1547,9 @@ namespace Intersect.Editor.Core
                             }
 
                             sourceX = (int)tmpGraphic.X * (eventTex.Width / Options.Instance.Sprites.NormalFrames);
-                            sourceY = (int)tmpGraphic.Y * (eventTex.Height / Options.Instance.Sprites.DirectionFrameRows);
+                            sourceY = (int)tmpGraphic.Y * (eventTex.Height / Options.Instance.Sprites.Directions);
                             width = (eventTex.Width / Options.Instance.Sprites.NormalFrames);
-                            height = (eventTex.Height / Options.Instance.Sprites.DirectionFrameRows);
+                            height = (eventTex.Height / Options.Instance.Sprites.Directions);
 
                             break;
                         case EventGraphicType.Tileset: //Tile

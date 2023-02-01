@@ -26,6 +26,11 @@
         public ushort AutoTurnToTargetDelay { get; set; } = 500;
 
         /// <summary>
+        /// When enabled, 'Auto-turn to target' is limited to entities within 180° in the front view of players.
+        /// </summary>
+        public bool AutoTurnToTargetLimited { get; set; } = false;
+
+        /// <summary>
         /// Enables or disables friend login notifications when a user joins the game.
         /// </summary>
         public bool EnableFriendLoginNotifications { get; set; } = true;

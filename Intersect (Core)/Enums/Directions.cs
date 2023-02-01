@@ -1,9 +1,7 @@
 namespace Intersect.Enums
 {
-
     public enum Directions
     {
-
         Up = 0,
 
         Down,
@@ -16,10 +14,8 @@ namespace Intersect.Enums
 
         UpRight,
 
-        DownLeft,
+        DownRight,
 
-        DownRight
-
+        DownLeft
     }
-
 }

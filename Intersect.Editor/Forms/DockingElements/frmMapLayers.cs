@@ -1065,7 +1065,7 @@ namespace Intersect.Editor.Forms.DockingElements
             grpSlide.Text = Strings.Attributes.Slide;
             lblSlideDir.Text = Strings.Attributes.Direction;
             cmbSlideDir.Items.Clear();
-            for (var i = -1; i < 4; i++)
+            for (var i = (Directions)(-1); i < (Directions)4; i++)
             {
                 cmbSlideDir.Items.Add(Strings.Directions.dir[i]);
             }
@@ -1102,7 +1102,7 @@ namespace Intersect.Editor.Forms.DockingElements
             lblY.Text = Strings.Warping.y.ToString("");
             lblWarpDir.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (var i = -1; i < 4; i++)
+            for (var i = (Directions)(-1); i < (Directions)4; i++)
             {
                 cmbDirection.Items.Add(Strings.Directions.dir[i]);
             }
@@ -1134,7 +1134,7 @@ namespace Intersect.Editor.Forms.DockingElements
 
             cmbCritterDirection.Items.Clear();
             cmbCritterDirection.Items.Add(Strings.NpcSpawns.randomdirection);
-            for (var i = 0; i < 4; i++)
+            for (Directions i = 0; i < (Directions)4; i++)
             {
                 cmbCritterDirection.Items.Add(Strings.Directions.dir[i]);
             }
@@ -1161,7 +1161,7 @@ namespace Intersect.Editor.Forms.DockingElements
             lblDir.Text = Strings.NpcSpawns.direction;
             cmbDir.Items.Clear();
             cmbDir.Items.Add(Strings.NpcSpawns.randomdirection);
-            for (var i = 0; i < 4; i++)
+            for (Directions i = 0; i < (Directions)4; i++)
             {
                 cmbDir.Items.Add(Strings.Directions.dir[i]);
             }

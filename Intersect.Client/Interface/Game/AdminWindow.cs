@@ -285,8 +285,8 @@ namespace Intersect.Client.Interface.Game
 
             if (SpritePanel.Texture != null)
             {
-                SpritePanel.SetTextureRect(0, 0, SpritePanel.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, SpritePanel.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows);
-                SpritePanel.SetSize(SpritePanel.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, SpritePanel.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows);
+                SpritePanel.SetTextureRect(0, 0, SpritePanel.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, SpritePanel.Texture.GetHeight() / Options.Instance.Sprites.Directions);
+                SpritePanel.SetSize(SpritePanel.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, SpritePanel.Texture.GetHeight() / Options.Instance.Sprites.Directions);
                 Align.AlignTop(SpritePanel);
                 Align.CenterHorizontally(SpritePanel);
             }

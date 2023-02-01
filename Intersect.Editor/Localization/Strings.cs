@@ -1462,13 +1462,13 @@ Tick timer saved in server config.json.";
                 {4, @"Right"}
             };
 
-            public static Dictionary<int, LocalizedString> dir = new Dictionary<int, LocalizedString>()
+            public static Dictionary<Enums.Directions, LocalizedString> dir = new Dictionary<Enums.Directions, LocalizedString>()
             {
-                {-1, @"Retain Direction"},
-                {0, @"Up"},
-                {1, @"Down"},
-                {2, @"Left"},
-                {3, @"Right"}
+                {(Enums.Directions)(-1), @"Retain Direction"},
+                {(Enums.Directions)(0), @"Up"},
+                {(Enums.Directions)(1), @"Down"},
+                {(Enums.Directions)(2), @"Left"},
+                {(Enums.Directions)(3), @"Right"}
             };
 
             public static Dictionary<int, LocalizedString> WarpDirections = new Dictionary<int, LocalizedString>()
@@ -2998,8 +2998,8 @@ Tick timer saved in server config.json.";
                 {"moveup", @"Move Up"},
                 {"moveupleft", @"Move Up Left"},
                 {"moveupright", @"Move Up Right"},
-                {"movedownleft", @"Move Down Left"},
                 {"movedownright", @"Move Down Right"},
+                {"movedownleft", @"Move Down Left"},
                 {"setanimation", @"Set Animation..."},
                 {"setattribute", @"Set Attribute"},
                 {"setgraphic", @"Set Graphic..."},

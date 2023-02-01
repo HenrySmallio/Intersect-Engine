@@ -36,8 +36,8 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Move Right");
             System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Move Up Left");
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Move Up Right");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Move Down Left");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Move Down Right");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Move Down Right");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Move Down Left");
             System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Move Randomly");
             System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Move Toward Player");
             System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Move Away From Player");
@@ -186,12 +186,12 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             treeNode6.Name = "moveupright";
             treeNode6.Tag = "47";
             treeNode6.Text = "Move Up Right";
-            treeNode7.Name = "movedownleft";
+            treeNode7.Name = "movedownright";
             treeNode7.Tag = "48";
-            treeNode7.Text = "Move Down Left";
-            treeNode8.Name = "movedownright";
+            treeNode7.Text = "Move Down Right";
+            treeNode8.Name = "movedownleft";
             treeNode8.Tag = "49";
-            treeNode8.Text = "Move Down Right";
+            treeNode8.Text = "Move Down Left";
             treeNode9.Name = "moverandomly";
             treeNode9.Tag = "5";
             treeNode9.Text = "Move Randomly";

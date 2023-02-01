@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using Intersect.Client.Core;
 using Intersect.Client.Framework.File_Management;
-using Intersect.Client.Framework.Graphics;
 using Intersect.Client.Framework.Gwen.Control;
 using Intersect.Client.Framework.Gwen.Control.EventArguments;
 using Intersect.Client.General;
@@ -285,11 +284,11 @@ namespace Intersect.Client.Interface.Menu
                         {
                             mCharacterPortrait.SetTextureRect(
                                 0, 0, mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames,
-                                mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                                mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
                             );
 
                             mCharacterPortrait.SetSize(
-                                mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                                mCharacterPortrait.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames, mCharacterPortrait.Texture.GetHeight() / Options.Instance.Sprites.Directions
                             );
 
                             mCharacterPortrait.SetPosition(

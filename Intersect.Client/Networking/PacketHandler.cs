@@ -470,7 +470,7 @@ namespace Intersect.Client.Networking
 
             en.X = packet.X;
             en.Y = packet.Y;
-            en.Dir = packet.Direction;
+            en.Dir = (Directions)packet.Direction;
             en.Passable = packet.Passable;
             en.HideName = packet.HideName;
         }
@@ -643,7 +643,7 @@ namespace Intersect.Client.Networking
             var map = mapId;
             var x = packet.X;
             var y = packet.Y;
-            var dir = packet.Direction;
+            Directions dir = (Directions)packet.Direction;
             var correction = packet.Correction;
             if ((en.MapId != map || en.X != x || en.Y != y) &&
                 (en != Globals.Me || en == Globals.Me && correction) &&
@@ -661,42 +661,42 @@ namespace Intersect.Client.Networking
 
                 switch (en.Dir)
                 {
-                    case (byte)Directions.Up:
+                    case Directions.Up:
                         en.OffsetY = Options.TileWidth;
                         en.OffsetX = 0;
 
                         break;
-                    case (byte)Directions.Down:
+                    case Directions.Down:
                         en.OffsetY = -Options.TileWidth;
                         en.OffsetX = 0;
 
                         break;
-                    case (byte)Directions.Left:
+                    case Directions.Left:
                         en.OffsetY = 0;
                         en.OffsetX = Options.TileWidth;
 
                         break;
-                    case (byte)Directions.Right:
+                    case Directions.Right:
                         en.OffsetY = 0;
                         en.OffsetX = -Options.TileWidth;
 
                         break;
-                    case (byte)Directions.UpLeft:
+                    case Directions.UpLeft:
                         en.OffsetY = Options.TileHeight;
                         en.OffsetX = Options.TileWidth;
 
                         break;
-                    case (byte)Directions.UpRight:
+                    case Directions.UpRight:
                         en.OffsetY = Options.TileHeight;
                         en.OffsetX = -Options.TileWidth;
 
                         break;
-                    case (byte)Directions.DownLeft:
+                    case Directions.DownLeft:
                         en.OffsetY = -Options.TileHeight;
                         en.OffsetX = Options.TileWidth;
 
                         break;
-                    case (byte)Directions.DownRight:
+                    case Directions.DownRight:
                         en.OffsetY = -Options.TileHeight;
                         en.OffsetX = -Options.TileWidth;
 
@@ -1000,7 +1000,7 @@ namespace Intersect.Client.Networking
                 return;
             }
 
-            en.Dir = packet.Direction;
+            en.Dir = (Directions)packet.Direction;
         }
 
         //EntityAttackPacket
@@ -1428,7 +1428,7 @@ namespace Intersect.Client.Networking
                 var map = MapInstance.Get(mapId);
                 if (map != null)
                 {
-                    map.AddTileAnimation(animId, packet.X, packet.Y, packet.Direction);
+                    map.AddTileAnimation(animId, packet.X, packet.Y, (Directions)packet.Direction);
                 }
             }
             else if (targetType == 1)
@@ -1446,7 +1446,7 @@ namespace Intersect.Client.Networking
 
                             if (packet.Direction > -1)
                             {
-                                animInstance.SetDir(packet.Direction);
+                                animInstance.SetDir((Directions)packet.Direction);
                             }
 
                             Globals.Entities[entityId].Animations.Add(animInstance);
@@ -1473,7 +1473,7 @@ namespace Intersect.Client.Networking
 
                                 if (packet.Direction > -1)
                                 {
-                                    animInstance.SetDir(packet.Direction);
+                                    animInstance.SetDir((Directions)packet.Direction);
                                 }
 
                                 map.LocalEntities[entityId].Animations.Add(animInstance);

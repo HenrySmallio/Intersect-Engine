@@ -344,7 +344,7 @@ namespace Intersect.Editor.Forms.Editors
             lblY.Text = Strings.Warping.y;
             lblDir.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (var i = 0; i < 4; i++)
+            for (Directions i = 0; i < (Directions)4; i++)
             {
                 cmbDirection.Items.Add(Strings.Directions.dir[i]);
             }
@@ -660,8 +660,8 @@ namespace Intersect.Editor.Forms.Editors
                 {
                     var img = Image.FromFile("resources/entities/" + cmbSprite.Text);
                     gfx.DrawImage(
-                        img, new Rectangle(0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.DirectionFrameRows),
-                        new Rectangle(0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.DirectionFrameRows), GraphicsUnit.Pixel
+                        img, new Rectangle(0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.Directions),
+                        new Rectangle(0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.Directions), GraphicsUnit.Pixel
                     );
 
                     img.Dispose();

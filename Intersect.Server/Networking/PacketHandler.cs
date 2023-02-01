@@ -1,5 +1,4 @@
 using Intersect.Enums;
-using Intersect.ErrorHandling;
 using Intersect.GameObjects;
 using Intersect.GameObjects.Crafting;
 using Intersect.GameObjects.Events;
@@ -699,10 +698,10 @@ namespace Intersect.Server.Networking
             if (player.ClientMoveTimer <= clientTime &&
                 (Options.Instance.PlayerOpts.AllowCombatMovement || player.ClientAttackTimer <= clientTime))
             {
-                var canMove = player.CanMove(packet.Dir);
+                var canMove = player.CanMove((Directions)packet.Dir);
                 if ((canMove == -1 || canMove == -4) && client.Entity.MoveRoute == null)
                 {
-                    player.Move(packet.Dir, player, false);
+                    player.Move((Directions)packet.Dir, player, false);
                     var utcDeltaMs = (Timing.Global.TicksUtc - packet.UTC) / TimeSpan.TicksPerMillisecond;
                     var latencyAdjustmentMs = -(client.Ping + Math.Max(0, utcDeltaMs));
                     var currentMs = packet.ReceiveTime;
@@ -1146,42 +1145,42 @@ namespace Intersect.Server.Networking
             var attackingTile = new TileHelper(player.MapId, player.X, player.Y);
             switch (player.Dir)
             {
-                case (byte)Directions.Up:
+                case Directions.Up:
                     attackingTile.Translate(0, -1);
                     break;
 
-                case (byte)Directions.Down:
+                case Directions.Down:
                     attackingTile.Translate(0, 1);
                     break;
 
-                case (byte)Directions.Left:
+                case Directions.Left:
                     attackingTile.Translate(-1, 0);
                     break;
 
-                case (byte)Directions.Right:
+                case Directions.Right:
                     attackingTile.Translate(1, 0);
                     break;
 
-                case (byte)Directions.UpLeft:
+                case Directions.UpLeft:
                     attackingTile.Translate(-1, -1);
                     break;
 
-                case (byte)Directions.UpRight:
+                case Directions.UpRight:
                     attackingTile.Translate(1, -1);
                     break;
 
-                case (byte)Directions.DownLeft:
+                case Directions.DownLeft:
                     attackingTile.Translate(-1, 1);
                     break;
 
-                case (byte)Directions.DownRight:
+                case Directions.DownRight:
                     attackingTile.Translate(1, 1);
                     break;
             }
 
             PacketSender.SendEntityAttack(player, player.CalculateAttackTime());
 
-            player.ClientAttackTimer = clientTime + (long) player.CalculateAttackTime();
+            player.ClientAttackTimer = clientTime + player.CalculateAttackTime();
 
             //Fire projectile instead if weapon has it
 
@@ -1249,11 +1248,9 @@ namespace Intersect.Server.Networking
                     if (MapController.TryGetInstanceFromMap(player.MapId, player.MapInstanceId, out var mapInstance))
                     {
                         mapInstance
-                        .SpawnMapProjectile(
-                            player, projectileBase, null, weaponItem, player.MapId,
-                            (byte)player.X, (byte)player.Y, (byte)player.Z,
-                            (byte)player.Dir, null
-                        );
+                            .SpawnMapProjectile(
+                                player, projectileBase, null, weaponItem, player.MapId,
+                                (byte)player.X, (byte)player.Y, (byte)player.Z, player.Dir, null);
 
                         player.AttackTimer = Timing.Global.Milliseconds +
                                              latencyAdjustmentMs +
@@ -1316,12 +1313,8 @@ namespace Intersect.Server.Networking
         public void HandlePacket(Client client, DirectionPacket packet)
         {
             var player = client?.Entity;
-            if (player == null)
-            {
-                return;
-            }
 
-            player.ChangeDir(packet.Direction);
+            player?.ChangeDir((Directions)packet.Direction);
         }
 
         //EnterGamePacket
@@ -1356,7 +1349,7 @@ namespace Intersect.Server.Networking
         //EventInputVariablePacket
         public void HandlePacket(Client client, EventInputVariablePacket packet)
         {
-            ((Player) client.Entity).RespondToEventInput(
+            client.Entity.RespondToEventInput(
                 packet.EventId, packet.Value, packet.StringValue, packet.Canceled
             );
         }
@@ -3050,7 +3043,7 @@ namespace Intersect.Server.Networking
 
             foreach (var plyr in players)
             {
-                plyr.Warp(plyr.MapId, (byte) plyr.X, (byte) plyr.Y, (byte) plyr.Dir, false, (byte) plyr.Z, true);
+                plyr.Warp(plyr.MapId, (byte) plyr.X, (byte) plyr.Y, plyr.Dir, false, (byte) plyr.Z, true);
                 PacketSender.SendMap(plyr.Client, packet.MapId);
             }
 

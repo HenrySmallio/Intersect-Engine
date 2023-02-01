@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.Server.Entities.Combat;
 using Intersect.Server.Entities.Events;
@@ -14,7 +14,7 @@ namespace Intersect.Server.Entities
     public partial class ProjectileSpawn
     {
 
-        public byte Dir;
+        public Directions Dir;
 
         public int Distance;
 
@@ -39,7 +39,7 @@ namespace Intersect.Server.Entities
         private List<Guid> mEntitiesCollided = new List<Guid>();
 
         public ProjectileSpawn(
-            byte dir,
+            Directions dir,
             byte x,
             byte y,
             byte z,
@@ -106,7 +106,7 @@ namespace Intersect.Server.Entities
                     {
                         Parent.Owner.TryAttack(targetEntity, Parent.Base, Parent.Spell, Parent.Item, Dir);
 
-                        if (Dir <= 3 && ShouldHook(targetEntity) && !Parent.HasGrappled)
+                        if (Dir <= Directions.Right && ShouldHook(targetEntity) && !Parent.HasGrappled)
                         {
                             HookEntity();
                         }
@@ -136,7 +136,7 @@ namespace Intersect.Server.Entities
                     {
                         Parent.Owner.TryAttack(targetResource, Parent.Base, Parent.Spell, Parent.Item, Dir);
 
-                        if (Dir <= 3 && ShouldHook(targetResource) && !Parent.HasGrappled)
+                        if (Dir <= Directions.Right && ShouldHook(targetResource) && !Parent.HasGrappled)
                         {
                             HookEntity();
                         }
@@ -152,7 +152,7 @@ namespace Intersect.Server.Entities
                     {
                         Parent.Owner.TryAttack(targetEntity, Parent.Base, Parent.Spell, Parent.Item, Dir);
 
-                        if (Dir <= 3 && ShouldHook(targetEntity) && !Parent.HasGrappled) 
+                        if (Dir <= Directions.Right && ShouldHook(targetEntity) && !Parent.HasGrappled) 
                         {
                             HookEntity();
                         }
@@ -205,7 +205,7 @@ namespace Intersect.Server.Entities
             Parent.HasGrappled = true;
             Parent.Owner.Dir = Dir;
             var _ = new Dash(
-                Parent.Owner, Distance, (byte)Parent.Owner.Dir, Parent.Base.IgnoreMapBlocks,
+                Parent.Owner, Distance, Parent.Owner.Dir, Parent.Base.IgnoreMapBlocks,
                 Parent.Base.IgnoreActiveResources, Parent.Base.IgnoreExhaustedResources,
                 Parent.Base.IgnoreZDimension
             );

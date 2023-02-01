@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using Intersect.Editor.Forms.Helpers;
 using Intersect.Editor.Localization;
+using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.GameObjects.Events;
 using Intersect.GameObjects.Events.Commands;
@@ -111,7 +112,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             lblY.Text = Strings.Warping.y.ToString("");
             lblDir.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (var i = 0; i < 4; i++)
+            for (Directions i = 0; i < (Directions)4; i++)
             {
                 cmbDirection.Items.Add(Strings.Directions.dir[i]);
             }

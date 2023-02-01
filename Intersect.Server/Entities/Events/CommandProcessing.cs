@@ -720,7 +720,7 @@ namespace Intersect.Server.Entities.Events
 
             player.Warp(
                 command.MapId, command.X, command.Y,
-                command.Direction == WarpDirection.Retain ? (byte)player.Dir : (byte)(command.Direction - 1),
+                command.Direction == WarpDirection.Retain ? player.Dir : (Directions)(command.Direction - 1),
                 mapInstanceType: instanceType
             );
         }
@@ -803,7 +803,7 @@ namespace Intersect.Server.Entities.Events
             var mapId = command.MapId;
             var tileX = 0;
             var tileY = 0;
-            var direction = (byte) Directions.Up;
+            Directions direction = (byte) Directions.Up;
             var targetEntity = (Entity) player;
             if (mapId != Guid.Empty)
             {
@@ -835,23 +835,23 @@ namespace Intersect.Server.Entities.Events
                 {
                     int xDiff = command.X;
                     int yDiff = command.Y;
-                    if (command.Dir == 1)
+                    if (command.Dir == Directions.Down)
                     {
                         var tmp = 0;
                         switch (targetEntity.Dir)
                         {
-                            case (int) Directions.Down:
+                            case Directions.Down:
                                 yDiff *= -1;
                                 xDiff *= -1;
 
                                 break;
-                            case (int) Directions.Left:
+                            case  Directions.Left:
                                 tmp = yDiff;
                                 yDiff = xDiff;
                                 xDiff = tmp;
 
                                 break;
-                            case (int) Directions.Right:
+                            case Directions.Right:
                                 tmp = yDiff;
                                 yDiff = xDiff;
                                 xDiff = -tmp;
@@ -859,7 +859,7 @@ namespace Intersect.Server.Entities.Events
                                 break;
                         }
 
-                        direction = (byte) targetEntity.Dir;
+                        direction = targetEntity.Dir;
                     }
 
                     mapId = targetEntity.MapId;
@@ -876,7 +876,7 @@ namespace Intersect.Server.Entities.Events
             if (tile.TryFix() && MapController.TryGetInstanceFromMap(mapId, player.MapInstanceId, out var instance))
             {
                 var npc = instance.SpawnNpc((byte)tileX, (byte)tileY, direction, npcId, true);
-                player.SpawnedNpcs.Add((Npc)npc);
+                player.SpawnedNpcs.Add(npc);
             }
         }
 
@@ -966,18 +966,18 @@ namespace Intersect.Server.Entities.Events
                         var tmp = 0;
                         switch (targetEntity.Dir)
                         {
-                            case (int) Directions.Down:
+                            case Directions.Down:
                                 yDiff *= -1;
                                 xDiff *= -1;
 
                                 break;
-                            case (int) Directions.Left:
+                            case Directions.Left:
                                 tmp = yDiff;
                                 yDiff = xDiff;
                                 xDiff = tmp;
 
                                 break;
-                            case (int) Directions.Right:
+                            case Directions.Right:
                                 tmp = yDiff;
                                 yDiff = xDiff;
                                 xDiff = -tmp;

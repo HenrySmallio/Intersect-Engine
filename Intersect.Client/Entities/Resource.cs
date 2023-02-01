@@ -7,7 +7,6 @@ using Intersect.Client.Framework.File_Management;
 using Intersect.Client.Framework.GenericClasses;
 using Intersect.Client.Framework.Maps;
 using Intersect.Client.General;
-using Intersect.Client.Maps;
 using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.Network.Packets.Server;
@@ -147,9 +146,12 @@ namespace Intersect.Client.Entities
         }
 
         /// <inheritdoc />
-        public override bool CanBeAttacked()
+        public override bool CanBeAttacked
         {
-            return !IsDead;
+            get
+            {
+                return !IsDead;
+            }
         }
 
         public override HashSet<Entity> DetermineRenderOrder(HashSet<Entity> renderList, IMapInstance map)

@@ -879,7 +879,7 @@ namespace Intersect.Client.Interface.Game.EntityPanel
                 {
                     EntityFace.Texture = entityTex;
                     EntityFace.RenderColor = MyEntity.Color ?? new Color(255, 255, 255, 255);
-                    EntityFace.SetTextureRect(0, 0, entityTex.GetWidth() / Options.Instance.Sprites.NormalFrames, entityTex.GetHeight() / Options.Instance.Sprites.DirectionFrameRows);
+                    EntityFace.SetTextureRect(0, 0, entityTex.GetWidth() / Options.Instance.Sprites.NormalFrames, entityTex.GetHeight() / Options.Instance.Sprites.Directions);
                     EntityFace.SizeToContents();
                     Align.Center(EntityFace);
                     mCurrentSprite = MyEntity.Sprite;
@@ -947,13 +947,13 @@ namespace Intersect.Client.Interface.Game.EntityPanel
                             paperdollPanel
                                 .SetTextureRect(
                                     0, 0, paperdollPanel.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames,
-                                    paperdollPanel.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                                    paperdollPanel.Texture.GetHeight() / Options.Instance.Sprites.Directions
                                 );
 
                             paperdollPanel
                                 .SetSize(
                                     paperdollPanel.Texture.GetWidth() / Options.Instance.Sprites.NormalFrames,
-                                    paperdollPanel.Texture.GetHeight() / Options.Instance.Sprites.DirectionFrameRows
+                                    paperdollPanel.Texture.GetHeight() / Options.Instance.Sprites.Directions
                                 );
 
                             paperdollPanel

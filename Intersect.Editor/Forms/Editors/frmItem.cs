@@ -1164,8 +1164,8 @@ namespace Intersect.Editor.Forms.Editors
                 );
 
                 gfx.DrawImage(
-                    img, new Rectangle(0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.DirectionFrameRows),
-                    0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.DirectionFrameRows, GraphicsUnit.Pixel, imgAttributes
+                    img, new Rectangle(0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.Directions),
+                    0, 0, img.Width / Options.Instance.Sprites.NormalFrames, img.Height / Options.Instance.Sprites.Directions, GraphicsUnit.Pixel, imgAttributes
                 );
 
                 img.Dispose();

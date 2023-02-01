@@ -259,7 +259,7 @@ namespace Intersect.Editor.Forms.Editors
             lblY.Text = Strings.Warping.y.ToString("");
             lblWarpDir.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (var i = -1; i < 4; i++)
+            for (Directions i = (Directions)(-1); i < (Directions)4; i++)
             {
                 cmbDirection.Items.Add(Strings.Directions.dir[i]);
             }
@@ -552,9 +552,9 @@ namespace Intersect.Editor.Forms.Editors
                     g.DrawImage(
                         src,
                         new Rectangle(
-                            picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.DirectionFrameRows * 2), src.Width / Options.Instance.Sprites.NormalFrames,
-                            src.Height / Options.Instance.Sprites.DirectionFrameRows
-                        ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.DirectionFrameRows), GraphicsUnit.Pixel
+                            picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.Directions * 2), src.Width / Options.Instance.Sprites.NormalFrames,
+                            src.Height / Options.Instance.Sprites.Directions
+                        ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.Directions), GraphicsUnit.Pixel
                     );
 
                     g.Dispose();
@@ -610,9 +610,9 @@ namespace Intersect.Editor.Forms.Editors
                 g.DrawImage(
                     src,
                     new Rectangle(
-                        picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.DirectionFrameRows * 2), src.Width / Options.Instance.Sprites.NormalFrames,
-                        src.Height / Options.Instance.Sprites.DirectionFrameRows
-                    ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.DirectionFrameRows), GraphicsUnit.Pixel
+                        picSprite.Width / 2 - src.Width / (Options.Instance.Sprites.NormalFrames * 2), picSprite.Height / 2 - src.Height / (Options.Instance.Sprites.Directions * 2), src.Width / Options.Instance.Sprites.NormalFrames,
+                        src.Height / Options.Instance.Sprites.Directions
+                    ), new Rectangle(0, 0, src.Width / Options.Instance.Sprites.NormalFrames, src.Height / Options.Instance.Sprites.Directions), GraphicsUnit.Pixel
                 );
 
                 g.Dispose();

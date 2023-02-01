@@ -6,7 +6,6 @@ using Intersect.Client.General;
 using Intersect.Client.Interface.Game;
 using Intersect.Client.Maps;
 using Intersect.Network.Packets.Client;
-using Intersect.Utilities;
 
 namespace Intersect.Client.Networking
 {
@@ -41,7 +40,7 @@ namespace Intersect.Client.Networking
 
         public static void SendMove()
         {
-            Network.SendPacket(new MovePacket(Globals.Me.MapId, Globals.Me.X, Globals.Me.Y, Globals.Me.Dir));
+            Network.SendPacket(new MovePacket(Globals.Me.MapId, Globals.Me.X, Globals.Me.Y, (byte)Globals.Me.Dir));
         }
 
         public static void SendChatMsg(string msg, byte channel)
