@@ -1265,7 +1265,7 @@ namespace Intersect.Server.Entities
             ProjectileBase projectile,
             SpellBase parentSpell,
             ItemBase parentItem,
-            Directions projectileDir)
+            Direction projectileDir)
         {
             if (!CanAttack(target, parentSpell))
             {
@@ -1618,7 +1618,7 @@ namespace Intersect.Server.Entities
         //Warping
         public override void Warp(Guid newMapId, float newX, float newY, bool adminWarp = false)
         {
-            Warp(newMapId, newX, newY, (byte)Directions.Up, adminWarp, 0, false);
+            Warp(newMapId, newX, newY, (byte)Direction.Up, adminWarp, 0, false);
         }
 
         public void AdminWarp(Guid newMapId, float newX, float newY, Guid newMapInstanceId, MapInstanceType instanceType, bool force)
@@ -1637,13 +1637,13 @@ namespace Intersect.Server.Entities
             {
                 PacketSender.SendChatMsg(this, Strings.Player.InstanceUpdate.ToString(PreviousMapInstanceId.ToString(), MapInstanceId.ToString()), ChatMessageType.Admin, CustomColors.Alerts.Info);
             }
-            Warp(newMapId, newX, newY, (byte)Directions.Up, forceInstanceChange: force);
+            Warp(newMapId, newX, newY, (byte)Direction.Up, forceInstanceChange: force);
         }
 
         public override void Warp(Guid newMapId,
             float newX,
             float newY,
-            Directions newDir,
+            Direction newDir,
             bool adminWarp = false,
             byte zOverride = 0,
             bool mapSave = false,
@@ -1833,7 +1833,7 @@ namespace Intersect.Server.Entities
             var mapId = Guid.Empty;
             byte x = 0;
             byte y = 0;
-            Directions dir = 0;
+            Direction dir = 0;
 
             if (Options.Instance.Instancing.SharedInstanceRespawnInInstance && InstanceType == MapInstanceType.Shared && !forceClassRespawn)
             {
@@ -1847,7 +1847,7 @@ namespace Intersect.Server.Entities
                 if (Options.Instance.Instancing.MaxSharedInstanceLives <= 0) // User has not configured shared instances to have lives
                 {
                     // Warp to the start of the shared instance - no concern for life total
-                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, (Directions)SharedInstanceRespawnDir);
+                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, (Direction)SharedInstanceRespawnDir);
                     return;
                 }
 
@@ -1875,7 +1875,7 @@ namespace Intersect.Server.Entities
                     }
 
                     // And warp to the instance start
-                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, (Directions)SharedInstanceRespawnDir);
+                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, (Direction)SharedInstanceRespawnDir);
                 }
                 else
                 {
@@ -1914,7 +1914,7 @@ namespace Intersect.Server.Entities
 
                     x = (byte)cls.SpawnX;
                     y = (byte)cls.SpawnY;
-                    dir = (Directions)cls.SpawnDir;
+                    dir = (Direction)cls.SpawnDir;
                 }
 
                 if (mapId == Guid.Empty)
@@ -6003,20 +6003,20 @@ namespace Intersect.Server.Entities
                         //Turn the global event opposite of the player
                         switch (Dir)
                         {
-                            case Directions.Up:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(Directions.Down);
+                            case Direction.Up:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Down);
 
                                 break;
-                            case Directions.Down:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(Directions.Up);
+                            case Direction.Down:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Up);
 
                                 break;
-                            case Directions.Left:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(Directions.Right);
+                            case Direction.Left:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Right);
 
                                 break;
-                            case Directions.Right:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(Directions.Left);
+                            case Direction.Right:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Left);
 
                                 break;
                         }
@@ -6461,7 +6461,7 @@ namespace Intersect.Server.Entities
             }
         }
 
-        public override int CanMove(Directions moveDir)
+        public override int CanMove(Direction moveDir)
         {
             //If crafting or locked by event return blocked
             if (OpenCraftingTableId != default && CraftingState != default)
@@ -6509,7 +6509,7 @@ namespace Intersect.Server.Entities
             return -1;
         }
 
-        public override void Move(Directions moveDir, Player forPlayer, bool dontUpdate = false,
+        public override void Move(Direction moveDir, Player forPlayer, bool dontUpdate = false,
             bool correction = false)
         {
             lock (EntityLock)
@@ -6525,7 +6525,7 @@ namespace Intersect.Server.Entities
                     var dir = Dir;
                     if (warpAtt.Direction != WarpDirection.Retain)
                     {
-                        dir = (Directions)(warpAtt.Direction - 1);
+                        dir = (Direction)(warpAtt.Direction - 1);
                     }
 
                     MapInstanceType? instanceType = null;

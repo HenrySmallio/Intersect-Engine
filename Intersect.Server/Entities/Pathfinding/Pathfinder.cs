@@ -456,49 +456,49 @@ namespace Intersect.Server.Entities.Pathfinding
                             if (mEntity.X < newX && mEntity.Y == newY)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Right;
+                                return (int)Direction.Right;
                             }
 
                             if (mEntity.X > newX && mEntity.Y == newY)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Left;
+                                return (int)Direction.Left;
                             }
 
                             if (mEntity.Y < newY && mEntity.X == newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Down;
+                                return (int)Direction.Down;
                             }
 
                             if (mEntity.Y > newY && mEntity.X == newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Up;
+                                return (int)Direction.Up;
                             }
 
                             if (mEntity.Y > newY && mEntity.X > newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.UpLeft;
+                                return (int)Direction.UpLeft;
                             }
 
                             if (mEntity.Y > newY && mEntity.X < newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.UpRight;
+                                return (int)Direction.UpRight;
                             }
 
                             if (mEntity.Y < newY && mEntity.X > newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.DownLeft;
+                                return (int)Direction.DownLeft;
                             }
 
                             if (mEntity.Y < newY && mEntity.X < newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.DownRight;
+                                return (int)Direction.DownRight;
                             }
                         }
                         else
@@ -506,25 +506,25 @@ namespace Intersect.Server.Entities.Pathfinding
                             if (mEntity.X < newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Right;
+                                return (int)Direction.Right;
                             }
 
                             if (mEntity.X > newX)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Left;
+                                return (int)Direction.Left;
                             }
 
                             if (mEntity.Y < newY)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Down;
+                                return (int)Direction.Down;
                             }
 
                             if (mEntity.Y > newY)
                             {
                                 enm.Dispose();
-                                return (int)Directions.Up;
+                                return (int)Direction.Up;
                             }
                         }
                     }

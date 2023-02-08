@@ -1451,7 +1451,7 @@ Tick timer saved in server config.json.";
 
         }
 
-        public partial struct Directions
+        public partial struct Direction
         {
             public static Dictionary<int, LocalizedString> CritterDirections = new Dictionary<int, LocalizedString>()
             {
@@ -1462,13 +1462,13 @@ Tick timer saved in server config.json.";
                 {4, @"Right"}
             };
 
-            public static Dictionary<Enums.Directions, LocalizedString> dir = new Dictionary<Enums.Directions, LocalizedString>()
+            public static Dictionary<Enums.Direction, LocalizedString> dir = new Dictionary<Enums.Direction, LocalizedString>()
             {
-                {(Enums.Directions)(-1), @"Retain Direction"},
-                {(Enums.Directions)(0), @"Up"},
-                {(Enums.Directions)(1), @"Down"},
-                {(Enums.Directions)(2), @"Left"},
-                {(Enums.Directions)(3), @"Right"}
+                {(Enums.Direction)(-1), @"Retain Direction"},
+                {(Enums.Direction)(0), @"Up"},
+                {(Enums.Direction)(1), @"Down"},
+                {(Enums.Direction)(2), @"Left"},
+                {(Enums.Direction)(3), @"Right"}
             };
 
             public static Dictionary<int, LocalizedString> WarpDirections = new Dictionary<int, LocalizedString>()

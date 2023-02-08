@@ -14,7 +14,7 @@ namespace Intersect.Server.Entities
     public partial class ProjectileSpawn
     {
 
-        public Directions Dir;
+        public Direction Dir;
 
         public int Distance;
 
@@ -39,7 +39,7 @@ namespace Intersect.Server.Entities
         private List<Guid> mEntitiesCollided = new List<Guid>();
 
         public ProjectileSpawn(
-            Directions dir,
+            Direction dir,
             byte x,
             byte y,
             byte z,
@@ -106,7 +106,7 @@ namespace Intersect.Server.Entities
                     {
                         Parent.Owner.TryAttack(targetEntity, Parent.Base, Parent.Spell, Parent.Item, Dir);
 
-                        if (Dir <= Directions.Right && ShouldHook(targetEntity) && !Parent.HasGrappled)
+                        if (Dir <= Direction.Right && ShouldHook(targetEntity) && !Parent.HasGrappled)
                         {
                             HookEntity();
                         }
@@ -136,7 +136,7 @@ namespace Intersect.Server.Entities
                     {
                         Parent.Owner.TryAttack(targetResource, Parent.Base, Parent.Spell, Parent.Item, Dir);
 
-                        if (Dir <= Directions.Right && ShouldHook(targetResource) && !Parent.HasGrappled)
+                        if (Dir <= Direction.Right && ShouldHook(targetResource) && !Parent.HasGrappled)
                         {
                             HookEntity();
                         }
@@ -152,7 +152,7 @@ namespace Intersect.Server.Entities
                     {
                         Parent.Owner.TryAttack(targetEntity, Parent.Base, Parent.Spell, Parent.Item, Dir);
 
-                        if (Dir <= Directions.Right && ShouldHook(targetEntity) && !Parent.HasGrappled) 
+                        if (Dir <= Direction.Right && ShouldHook(targetEntity) && !Parent.HasGrappled) 
                         {
                             HookEntity();
                         }

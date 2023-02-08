@@ -1,6 +1,6 @@
 namespace Intersect.Enums
 {
-    public enum Directions
+    public enum Direction
     {
         Up = 0,
 

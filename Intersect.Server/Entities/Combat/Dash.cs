@@ -8,16 +8,16 @@ namespace Intersect.Server.Entities.Combat
     public partial class Dash
     {
 
-        public Directions Direction;
+        public Direction Direction;
 
-        public Directions Facing;
+        public Direction Facing;
 
         public int Range;
 
         public Dash(
             Entity en,
             int range,
-            Directions direction,
+            Direction direction,
             bool blockPass = false,
             bool activeResourcePass = false,
             bool deadResourcePass = false,

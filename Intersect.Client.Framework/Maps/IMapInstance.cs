@@ -27,7 +27,7 @@ namespace Intersect.Client.Framework.Maps
         bool IsLoaded { get; }
 
         void AddEvent(Guid evtId, EventEntityPacket packet);
-        void AddTileAnimation(Guid animId, int tileX, int tileY, Directions dir = default, IEntity owner = null);
+        void AddTileAnimation(Guid animId, int tileX, int tileY, Direction dir = default, IEntity owner = null);
         void CompareEffects(IMapInstance oldMap);
         bool InView();
         void Load(string json);

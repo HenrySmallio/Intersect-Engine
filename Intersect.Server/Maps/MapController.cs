@@ -352,22 +352,22 @@ namespace Intersect.Server.Maps
         /// <param name="side">Which side to destroy connections from. -1 will clear all directionsm and is the default</param>
         public void ClearConnections(int side = -1)
         {
-            if (side == -1 || side == (int) Directions.Up)
+            if (side == -1 || side == (int) Direction.Up)
             {
                 Up = Guid.Empty;
             }
 
-            if (side == -1 || side == (int) Directions.Down)
+            if (side == -1 || side == (int) Direction.Down)
             {
                 Down = Guid.Empty;
             }
 
-            if (side == -1 || side == (int) Directions.Left)
+            if (side == -1 || side == (int) Direction.Left)
             {
                 Left = Guid.Empty;
             }
 
-            if (side == -1 || side == (int) Directions.Right)
+            if (side == -1 || side == (int) Direction.Right)
             {
                 Right = Guid.Empty;
             }

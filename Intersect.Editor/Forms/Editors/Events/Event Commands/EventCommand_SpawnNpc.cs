@@ -95,9 +95,9 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             lblY.Text = Strings.Warping.y.ToString("");
             lblMap.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (Directions i = 0; i < (Directions)4; i++)
+            for (Direction i = 0; i < (Direction)4; i++)
             {
-                cmbDirection.Items.Add(Strings.Directions.dir[i]);
+                cmbDirection.Items.Add(Strings.Direction.dir[i]);
             }
 
             cmbDirection.SelectedIndex = 0;
@@ -193,7 +193,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
                     mMyCommand.MapId = MapList.OrderedMaps[cmbMap.SelectedIndex].MapId;
                     mMyCommand.X = (sbyte)nudWarpX.Value;
                     mMyCommand.Y = (sbyte)nudWarpY.Value;
-                    mMyCommand.Dir = (Directions)cmbDirection.SelectedIndex;
+                    mMyCommand.Dir = (Direction)cmbDirection.SelectedIndex;
 
                     break;
                 case 1: //On/Around Entity Spawn
@@ -209,7 +209,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
 
                     mMyCommand.X = (sbyte)mSpawnX;
                     mMyCommand.Y = (sbyte)mSpawnY;
-                    mMyCommand.Dir = (Directions)Convert.ToInt32(chkDirRelative.Checked);
+                    mMyCommand.Dir = (Direction)Convert.ToInt32(chkDirRelative.Checked);
 
                     break;
             }

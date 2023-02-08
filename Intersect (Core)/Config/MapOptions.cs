@@ -50,7 +50,7 @@ namespace Intersect.Config
             get { return mEnableDiagonalMovement; }
             set
             {
-                mEnableDiagonalMovement = value ? value : false;
+                mEnableDiagonalMovement = true ? true : false;
                 MovementDirections = mEnableDiagonalMovement ? 8 : 4;
             }
         }

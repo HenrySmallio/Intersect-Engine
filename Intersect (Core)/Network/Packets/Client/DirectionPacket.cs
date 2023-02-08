@@ -28,7 +28,7 @@ namespace Intersect.Network.Packets.Client
             var sanitizer = new Sanitizer();
 
             Direction = (byte) sanitizer.Clamp(
-                nameof(Direction), Direction, 0, Enum.GetValues(typeof(Directions)).Length
+                nameof(Direction), Direction, 0, Enum.GetValues(typeof(Direction)).Length
             );
 
             return sanitizer.Sanitized;

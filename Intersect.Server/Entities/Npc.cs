@@ -511,7 +511,7 @@ namespace Intersect.Server.Entities
             }
         }
 
-        public override int CanMove(Directions moveDir)
+        public override int CanMove(Direction moveDir)
         {
             var canMove = base.CanMove(moveDir);
 
@@ -527,38 +527,38 @@ namespace Intersect.Server.Entities
                 var tile = new TileHelper(MapId, X, Y);
                 switch (moveDir)
                 {
-                    case Directions.Up:
+                    case Direction.Up:
                         yOffset--;
 
                         break;
-                    case Directions.Down:
+                    case Direction.Down:
                         yOffset++;
 
                         break;
-                    case Directions.Left:
+                    case Direction.Left:
                         xOffset--;
 
                         break;
-                    case Directions.Right:
+                    case Direction.Right:
                         xOffset++;
 
                         break;
-                    case Directions.UpLeft:
+                    case Direction.UpLeft:
                         yOffset--;
                         xOffset--;
 
                         break;
-                    case Directions.UpRight:
+                    case Direction.UpRight:
                         yOffset--;
                         xOffset++;
 
                         break;
-                    case Directions.DownLeft:
+                    case Direction.DownLeft:
                         yOffset++;
                         xOffset--;
 
                         break;
-                    case Directions.DownRight:
+                    case Direction.DownRight:
                         yOffset++;
                         xOffset++;
 
@@ -895,43 +895,43 @@ namespace Intersect.Server.Entities
                                 {
                                     case PathfinderResult.Success:
 
-                                        var dir = (Directions)mPathFinder.GetMove();
-                                        if (dir > (Directions)(-1))
+                                        var dir = (Direction)mPathFinder.GetMove();
+                                        if (dir >= Direction.Up)
                                         {
                                             if (fleeing)
                                             {
                                                 switch (dir)
                                                 {
-                                                    case Directions.Up:
-                                                        dir = Directions.Down;
+                                                    case Direction.Up:
+                                                        dir = Direction.Down;
 
                                                         break;
-                                                    case Directions.Down:
-                                                        dir = Directions.Up;
+                                                    case Direction.Down:
+                                                        dir = Direction.Up;
 
                                                         break;
-                                                    case Directions.Left:
-                                                        dir = Directions.Right;
+                                                    case Direction.Left:
+                                                        dir = Direction.Right;
 
                                                         break;
-                                                    case Directions.Right:
-                                                        dir = Directions.Left;
+                                                    case Direction.Right:
+                                                        dir = Direction.Left;
 
                                                         break;
-                                                    case Directions.UpLeft:
-                                                        dir = Directions.UpRight;
+                                                    case Direction.UpLeft:
+                                                        dir = Direction.UpRight;
 
                                                         break;
-                                                    case Directions.UpRight:
-                                                        dir = Directions.UpLeft;
+                                                    case Direction.UpRight:
+                                                        dir = Direction.UpLeft;
 
                                                         break;
-                                                    case Directions.DownRight:
-                                                        dir = Directions.DownLeft;
+                                                    case Direction.DownRight:
+                                                        dir = Direction.DownLeft;
 
                                                         break;
-                                                    case Directions.DownLeft:
-                                                        dir = Directions.DownRight;
+                                                    case Direction.DownLeft:
+                                                        dir = Direction.DownRight;
 
                                                         break;
                                                 }
@@ -1011,36 +1011,36 @@ namespace Intersect.Server.Entities
                                     var dir = DirToEnemy(tempTarget);
                                     switch (dir)
                                     {
-                                        case Directions.Up:
-                                            dir = Directions.Down;
+                                        case Direction.Up:
+                                            dir = Direction.Down;
 
                                             break;
-                                        case Directions.Down:
-                                            dir = Directions.Up;
+                                        case Direction.Down:
+                                            dir = Direction.Up;
 
                                             break;
-                                        case Directions.Left:
-                                            dir = Directions.Right;
+                                        case Direction.Left:
+                                            dir = Direction.Right;
 
                                             break;
-                                        case Directions.Right:
-                                            dir = Directions.Left;
+                                        case Direction.Right:
+                                            dir = Direction.Left;
 
                                             break;
-                                        case Directions.UpLeft:
-                                            dir = Directions.UpRight;
+                                        case Direction.UpLeft:
+                                            dir = Direction.UpRight;
 
                                             break;
-                                        case Directions.UpRight:
-                                            dir = Directions.UpLeft;
+                                        case Direction.UpRight:
+                                            dir = Direction.UpLeft;
                                             break;
 
-                                        case Directions.DownRight:
-                                            dir = Directions.DownLeft;
+                                        case Direction.DownRight:
+                                            dir = Direction.DownLeft;
 
                                             break;
-                                        case Directions.DownLeft:
-                                            dir = Directions.DownRight;
+                                        case Direction.DownLeft:
+                                            dir = Direction.DownRight;
 
                                             break;
                                     }
@@ -1112,16 +1112,16 @@ namespace Intersect.Server.Entities
                         }
                         else if (Base.Movement == (int)NpcMovement.TurnRandomly)
                         {
-                            ChangeDir((Directions)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections));
+                            ChangeDir((Direction)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections));
                             LastRandomMove = Timing.Global.Milliseconds + Randomization.Next(1000, 3000);
 
                             return;
                         }
 
-                        var i = (Directions)Randomization.Next(0, 1);
+                        var i = (Direction)Randomization.Next(0, 1);
                         if (i == 0)
                         {
-                            i = (Directions)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
+                            i = (Direction)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
                             if (CanMove(i) == -1)
                             {
                                 //check if NPC is snared or stunned
@@ -1540,7 +1540,7 @@ namespace Intersect.Server.Entities
         public override void Warp(Guid newMapId,
             float newX,
             float newY,
-            Directions newDir,
+            Direction newDir,
             bool adminWarp = false,
             byte zOverride = 0,
             bool mapSave = false,

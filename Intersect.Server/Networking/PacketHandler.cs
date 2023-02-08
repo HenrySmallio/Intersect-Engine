@@ -698,10 +698,10 @@ namespace Intersect.Server.Networking
             if (player.ClientMoveTimer <= clientTime &&
                 (Options.Instance.PlayerOpts.AllowCombatMovement || player.ClientAttackTimer <= clientTime))
             {
-                var canMove = player.CanMove((Directions)packet.Dir);
+                var canMove = player.CanMove((Direction)packet.Dir);
                 if ((canMove == -1 || canMove == -4) && client.Entity.MoveRoute == null)
                 {
-                    player.Move((Directions)packet.Dir, player, false);
+                    player.Move((Direction)packet.Dir, player, false);
                     var utcDeltaMs = (Timing.Global.TicksUtc - packet.UTC) / TimeSpan.TicksPerMillisecond;
                     var latencyAdjustmentMs = -(client.Ping + Math.Max(0, utcDeltaMs));
                     var currentMs = packet.ReceiveTime;
@@ -1145,35 +1145,35 @@ namespace Intersect.Server.Networking
             var attackingTile = new TileHelper(player.MapId, player.X, player.Y);
             switch (player.Dir)
             {
-                case Directions.Up:
+                case Direction.Up:
                     attackingTile.Translate(0, -1);
                     break;
 
-                case Directions.Down:
+                case Direction.Down:
                     attackingTile.Translate(0, 1);
                     break;
 
-                case Directions.Left:
+                case Direction.Left:
                     attackingTile.Translate(-1, 0);
                     break;
 
-                case Directions.Right:
+                case Direction.Right:
                     attackingTile.Translate(1, 0);
                     break;
 
-                case Directions.UpLeft:
+                case Direction.UpLeft:
                     attackingTile.Translate(-1, -1);
                     break;
 
-                case Directions.UpRight:
+                case Direction.UpRight:
                     attackingTile.Translate(1, -1);
                     break;
 
-                case Directions.DownLeft:
+                case Direction.DownLeft:
                     attackingTile.Translate(-1, 1);
                     break;
 
-                case Directions.DownRight:
+                case Direction.DownRight:
                     attackingTile.Translate(1, 1);
                     break;
             }
@@ -1314,7 +1314,7 @@ namespace Intersect.Server.Networking
         {
             var player = client?.Entity;
 
-            player?.ChangeDir((Directions)packet.Direction);
+            player?.ChangeDir((Direction)packet.Direction);
         }
 
         //EnterGamePacket
@@ -3390,26 +3390,26 @@ namespace Intersect.Server.Networking
                             //Up
                             if (gridY - 1 >= 0 && grid.MyGrid[gridX, gridY - 1] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX, gridY - 1])?.ClearConnections((int) Directions.Down);
+                                MapController.Get(grid.MyGrid[gridX, gridY - 1])?.ClearConnections((int) Direction.Down);
                             }
 
                             //Down
                             if (gridY + 1 < grid.Height && grid.MyGrid[gridX, gridY + 1] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX, gridY + 1])?.ClearConnections((int) Directions.Up);
+                                MapController.Get(grid.MyGrid[gridX, gridY + 1])?.ClearConnections((int) Direction.Up);
                             }
 
                             //Left
                             if (gridX - 1 >= 0 && grid.MyGrid[gridX - 1, gridY] != Guid.Empty)
                             {
                                 MapController.Get(grid.MyGrid[gridX - 1, gridY])
-                                    ?.ClearConnections((int) Directions.Right);
+                                    ?.ClearConnections((int) Direction.Right);
                             }
 
                             //Right
                             if (gridX + 1 < grid.Width && grid.MyGrid[gridX + 1, gridY] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX + 1, gridY]).ClearConnections((int) Directions.Left);
+                                MapController.Get(grid.MyGrid[gridX + 1, gridY]).ClearConnections((int) Direction.Left);
                             }
 
                             DbInterface.GenerateMapGrids();

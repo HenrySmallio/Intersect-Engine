@@ -62,7 +62,7 @@ namespace Intersect.Client.Entities
                 mEndYCoord = endMap.GetY() + mEndY * Options.TileHeight - (startMap.GetY() + en.Y * Options.TileHeight);
                 if (mChangeDirection > -1)
                 {
-                    en.Dir = (Directions)mChangeDirection;
+                    en.Dir = (Direction)mChangeDirection;
                 }
             }
         }

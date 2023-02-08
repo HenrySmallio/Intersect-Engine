@@ -4,7 +4,6 @@ using System.Linq;
 
 using Intersect.Enums;
 using Intersect.GameObjects;
-using Intersect.Server.General;
 using Intersect.Utilities;
 
 namespace Intersect.Server.Entities.Combat
@@ -99,12 +98,12 @@ namespace Intersect.Server.Entities.Combat
             var aliveAnimations = new List<KeyValuePair<Guid, sbyte>>();
             if (SpellBase.TickAnimationId != Guid.Empty)
             {
-                var animation = new KeyValuePair<Guid, sbyte>(SpellBase.TickAnimationId, (sbyte)Directions.Up);
+                var animation = new KeyValuePair<Guid, sbyte>(SpellBase.TickAnimationId, (sbyte)Direction.Up);
                 deadAnimations.Add(animation);
                 aliveAnimations.Add(animation);
             } else if (SpellBase.HitAnimationId != Guid.Empty)
             {
-                var animation = new KeyValuePair<Guid, sbyte>(SpellBase.HitAnimationId, (sbyte)Directions.Up);
+                var animation = new KeyValuePair<Guid, sbyte>(SpellBase.HitAnimationId, (sbyte)Direction.Up);
                 deadAnimations.Add(animation);
                 aliveAnimations.Add(animation);
             }

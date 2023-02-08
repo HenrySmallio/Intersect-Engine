@@ -13,8 +13,8 @@ namespace Intersect.Client.Framework.Entities
         Point Size { get; }
 
         void Hide();
-        void SetDir(Directions dir);
-        void SetPosition(float worldX, float worldY, int mapx, int mapy, Guid mapId, Directions dir, int z = 0);
+        void SetDir(Direction dir);
+        void SetPosition(float worldX, float worldY, int mapx, int mapy, Guid mapId, Direction dir, int z = 0);
         void Show();
     }
 }

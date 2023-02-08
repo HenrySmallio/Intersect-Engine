@@ -25,7 +25,6 @@ using Intersect.Utilities;
 
 namespace Intersect.Client.Entities
 {
-
     public partial class Entity : IEntity
     {
         public int AnimationFrame { get; set; }
@@ -62,7 +61,7 @@ namespace Intersect.Client.Entities
 
         private Guid[] _equipment = new Guid[Options.EquipmentSlots.Count];
 
-        private readonly float PythagoreanMultiplier = (float) Math.Sqrt(2);
+        private readonly float PythagoreanMultiplier = (float)Math.Sqrt(2);
 
         public Guid[] Equipment
         {
@@ -106,8 +105,6 @@ namespace Intersect.Client.Entities
 
         public bool InView { get; set; } = true;
 
-        public bool IsLocal { get; set; } = false;
-
         public bool IsMoving { get; set; }
 
         //Caching
@@ -125,7 +122,7 @@ namespace Intersect.Client.Entities
         //Chat
         private List<ChatBubble> mChatBubbles = new List<ChatBubble>();
 
-        private Directions mDir;
+        private Direction mDir;
 
         protected bool mDisposed;
 
@@ -135,7 +132,7 @@ namespace Intersect.Client.Entities
 
         public Color Color { get; set; } = new Color(255, 255, 255, 255);
 
-        public Directions MoveDir { get; set; } = (Directions)(-1);
+        public Direction MoveDir { get; set; } = (Direction)(-1);
 
         public long MoveTimer { get; set; }
 
@@ -185,14 +182,14 @@ namespace Intersect.Client.Entities
 
         IReadOnlyList<int> IEntity.Stats => Stat.ToList();
 
-        public int Target { get; set; } = -1;
-
         public GameTexture Texture { get; set; }
 
         #region "Animation Textures and Timing"
+
         public SpriteAnimations SpriteAnimation { get; set; } = SpriteAnimations.Normal;
 
-        public Dictionary<SpriteAnimations, GameTexture> AnimatedTextures { get; set; } = new Dictionary<SpriteAnimations, GameTexture>();
+        public Dictionary<SpriteAnimations, GameTexture> AnimatedTextures { get; set; } =
+            new Dictionary<SpriteAnimations, GameTexture>();
 
         public int SpriteFrame { get; set; } = 0;
 
@@ -215,7 +212,7 @@ namespace Intersect.Client.Entities
         public int WalkFrame { get; set; }
 
         public FloatRect WorldPos { get; set; } = new FloatRect();
-        
+
         public bool IsHovered { get; set; }
 
         //Location Info
@@ -272,12 +269,10 @@ namespace Intersect.Client.Entities
 
         public Pointf Center => Origin - CenterOffset;
 
-        private readonly int[] mEntitySpriteDirections = { 3, 0, 1, 2, 3, 3, 0, 0 };
-
-        public Directions Dir
+        public Direction Dir
         {
             get => mDir;
-            set => mDir = (Directions)((int)(value + Options.Instance.MapOpts.MovementDirections) % Options.Instance.MapOpts.MovementDirections);
+            set => mDir = (Direction)((int)(value + Options.Instance.MapOpts.MovementDirections) % Options.Instance.MapOpts.MovementDirections);
         }
 
         public virtual string TransformedSprite
@@ -358,7 +353,7 @@ namespace Intersect.Client.Entities
             X = packet.X;
             Y = packet.Y;
             Z = packet.Z;
-            Dir = (Directions)packet.Dir;
+            Dir = (Direction)packet.Dir;
             Passable = packet.Passable;
             HideName = packet.HideName;
             IsHidden = packet.HideEntity;
@@ -526,7 +521,7 @@ namespace Intersect.Client.Entities
         public virtual float GetMovementTime()
         {
             var time = 1000f / (float) (1 + Math.Log(Stat[(int) Stats.Speed]));
-            if (Dir > Directions.Right)
+            if (Dir > Direction.Right)
             {
                 time *= PythagoreanMultiplier;
             }
@@ -630,7 +625,7 @@ namespace Intersect.Client.Entities
                 float displacementTime = ecTime * Options.TileHeight / GetMovementTime();
                 switch (Dir)
                 {
-                    case Directions.Up:
+                    case Direction.Up:
                         OffsetY -= displacementTime;
                         OffsetX = 0;
                         if (OffsetY < 0)
@@ -640,7 +635,7 @@ namespace Intersect.Client.Entities
 
                         break;
 
-                    case Directions.Down:
+                    case Direction.Down:
                         OffsetY += displacementTime;
                         OffsetX = 0;
                         if (OffsetY > 0)
@@ -650,7 +645,7 @@ namespace Intersect.Client.Entities
 
                         break;
 
-                    case Directions.Left:
+                    case Direction.Left:
                         OffsetX -= displacementTime;
                         OffsetY = 0;
                         if (OffsetX < 0)
@@ -660,7 +655,7 @@ namespace Intersect.Client.Entities
 
                         break;
 
-                    case Directions.Right:
+                    case Direction.Right:
                         OffsetX += displacementTime;
                         OffsetY = 0;
                         if (OffsetX > 0)
@@ -669,7 +664,7 @@ namespace Intersect.Client.Entities
                         }
 
                         break;
-                    case Directions.UpLeft:
+                    case Direction.UpLeft:
                         OffsetY -= displacementTime;
                         OffsetX -= displacementTime;
                         if (OffsetY < 0)
@@ -683,7 +678,7 @@ namespace Intersect.Client.Entities
                         }
 
                         break;
-                    case Directions.UpRight:
+                    case Direction.UpRight:
                         OffsetY -= displacementTime;
                         OffsetX += displacementTime;
                         if (OffsetY < 0)
@@ -697,7 +692,7 @@ namespace Intersect.Client.Entities
                         }
 
                         break;
-                    case Directions.DownLeft:
+                    case Direction.DownLeft:
                         OffsetY += displacementTime;
                         OffsetX -= displacementTime;
                         if (OffsetY > 0)
@@ -712,7 +707,7 @@ namespace Intersect.Client.Entities
 
 
                         break;
-                    case Directions.DownRight:
+                    case Direction.DownRight:
                         OffsetY += displacementTime;
                         OffsetX += displacementTime;
                         if (OffsetY > 0)
@@ -1054,7 +1049,7 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            var d = mEntitySpriteDirections[(int)Dir];
+            var d = PickSpriteRow(Dir);
 
             var frameWidth = texture.GetWidth() / SpriteFrames;
             var frameHeight = texture.GetHeight() / Options.Instance.Sprites.Directions;
@@ -1126,6 +1121,27 @@ namespace Intersect.Client.Entities
             }
         }
 
+        private static int PickSpriteRow(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Down:
+                case Direction.DownLeft:
+                case Direction.DownRight:
+                    return 0;
+                case Direction.Left:
+                    return 1;
+                case Direction.Right:
+                    return 2;
+                case Direction.Up:
+                case Direction.UpLeft:
+                case Direction.UpRight:
+                    return 3;
+                default:
+                    return 0;
+            }
+        }
+        
         public void DrawChatBubbles()
         {
             //Don't draw if the entity is hidden
@@ -1185,7 +1201,7 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            var d = mEntitySpriteDirections[(int)Dir];
+            var d = PickSpriteRow(Dir);
 
             var frameWidth = paperdollTex.GetWidth() / spriteFrames;
             var frameHeight = paperdollTex.GetHeight() / Options.Instance.Sprites.Directions;
@@ -1680,13 +1696,7 @@ namespace Intersect.Client.Entities
             Graphics.DrawGameTexture(targetTexture, srcRectangle, destRectangle, Color.White);
         }
 
-        public virtual bool CanBeAttacked
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public virtual bool CanBeAttacked => true;
 
         //Chatting
         public void AddChatBubble(string text)
@@ -1957,14 +1967,15 @@ namespace Intersect.Client.Entities
         }
 
         /// <summary>
-        /// <para>Returns the direction to a player's selected target.
-        /// Thanks to Daywalkr (Middle Ages: Online) for this !</para>
+        /// <para>Returns the direction to a player's selected target.</para>
+        /// <para>Original logic made by Daywalkr (Middle Ages: Online), thanks for sharing!</para>
+        /// <para>Modified by Arufonsu for the Intersect Engine along with support for 8 directions when enabled.</para>
         /// </summary>
         /// <param name="en">entity's target</param>
         /// <returns>direction to player's selected target</returns>
-        protected Directions DirectionToTarget(Entity en)
+        protected Direction DirectionToTarget(Entity en)
         {
-            Directions newDir = Dir;
+            Direction newDir = Dir;
 
             if (en == null)
             {
@@ -1976,6 +1987,7 @@ namespace Intersect.Client.Entities
             int targetY = en.Y;
             int targetX = en.X;
 
+            // Calculate Y and X offset between origin and target if they're not on the same map instance.
             if (en.MapInstance.Id != MapInstance.Id)
             {
                 if (en.MapInstance.GridY < MapInstance.GridY)
@@ -1997,51 +2009,32 @@ namespace Intersect.Client.Entities
                 }
             }
 
-            var yOffset = originY - targetY;
-            var xOffset = originX - targetX;
+            // Calculate the offset between origin and target along both of their axis.
+            int yDiff = originY - targetY;
+            int xDiff = originX - targetX;
 
-            newDir = Options.Instance.MapOpts.EnableDiagonalMovement
-                ? CrossAndDiagonalDirections(newDir, xOffset, yOffset)
-                : CrossDirections(newDir, xOffset, yOffset);
-
-            Directions CrossDirections(Directions direction, int xOffset4, int yOffset4)
+            // If Y offset is 0, direction is determined by X offset.
+            if (yDiff == 0)
             {
-                var xDir = xOffset4 == 0 ? direction : (xOffset4 < 0 ? Directions.Right : Directions.Left);
-                var yDir = yOffset4 == 0 ? direction : (yOffset4 < 0 ? Directions.Down : Directions.Up);
-                direction = Math.Abs(yOffset4) > Math.Abs(xOffset4) ? yDir : xDir;
-
-                return direction;
+                return xDiff > 0 ? Direction.Left : Direction.Right;
             }
 
-            Directions CrossAndDiagonalDirections(Directions direction, int xOffset8, int yOffset8)
+            // If X offset is 0 or If diagonal movement is disabled, direction is determined by Y offset.
+            if (xDiff == 0 || !Options.Instance.MapOpts.EnableDiagonalMovement)
             {
-                if (xOffset8 == 0)
-                {
-                    if (yOffset8 == 0)
-                    {
-                        return direction;
-                    }
-
-                    direction = yOffset8 > 0 ? Directions.Up : Directions.Down;
-                }
-                else if (yOffset8 == 0)
-                {
-                    direction = xOffset8 > 0 ? Directions.Left : Directions.Right;
-                }
-                else
-                {
-                    int xSign = Math.Sign(xOffset8);
-                    int ySign = Math.Sign(yOffset8);
-
-                    direction = xSign > 0
-                        ? (ySign > 0 ? Directions.UpLeft : Directions.DownLeft)
-                        : (ySign > 0 ? Directions.UpRight : Directions.DownRight);
-                }
-
-                return direction;
+                return yDiff > 0 ? Direction.Up : Direction.Down;
             }
 
-            return newDir;
+            // If both X and Y offset are non-zero, direction is determined by both offsets.
+            int xSign = Math.Sign(xDiff);
+            int ySign = Math.Sign(yDiff);
+
+            if (xSign > 0)
+            {
+                return ySign > 0 ? Direction.UpLeft : Direction.DownLeft;
+            }
+
+            return ySign > 0 ? Direction.UpRight : Direction.DownRight;
         }
 
         //Movement

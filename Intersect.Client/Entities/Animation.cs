@@ -34,7 +34,7 @@ namespace Intersect.Client.Entities
 
         private Entity mParent;
 
-        private Directions mRenderDir;
+        private Direction mRenderDir;
 
         private float mRenderX;
 
@@ -110,39 +110,39 @@ namespace Intersect.Client.Entities
 
             var rotationDegrees = 0f;
             var dontRotate = upper && MyBase.Upper.DisableRotations || !upper && MyBase.Lower.DisableRotations;
-            if ((AutoRotate || mRenderDir != (Directions)(-1)) && !dontRotate)
+            if (AutoRotate || !dontRotate)
             {
                 switch (mRenderDir)
                 {
-                    case Directions.Up:
+                    case Direction.Up:
                         rotationDegrees = 0f;
 
                         break;
-                    case Directions.Down:
+                    case Direction.Down:
                         rotationDegrees = 180f;
 
                         break;
-                    case Directions.Left:
+                    case Direction.Left:
                         rotationDegrees = 270f;
 
                         break;
-                    case Directions.Right:
+                    case Direction.Right:
                         rotationDegrees = 90f;
 
                         break;
-                    case Directions.UpLeft:
+                    case Direction.UpLeft:
                         rotationDegrees = 315f;
 
                         break;
-                    case Directions.UpRight:
+                    case Direction.UpRight:
                         rotationDegrees = 45f;
 
                         break;
-                    case Directions.DownRight:
+                    case Direction.DownRight:
                         rotationDegrees = 135f;
 
                         break;
-                    case Directions.DownLeft:
+                    case Direction.DownLeft:
                         rotationDegrees = 225f;
 
                         break;
@@ -310,7 +310,7 @@ namespace Intersect.Client.Entities
             return disposed;
         }
 
-        public void SetPosition(float worldX, float worldY, int mapx, int mapy, Guid mapId, Directions dir, int z = 0)
+        public void SetPosition(float worldX, float worldY, int mapx, int mapy, Guid mapId, Direction dir, int z = 0)
         {
             mRenderX = worldX;
             mRenderY = worldY;
@@ -319,7 +319,7 @@ namespace Intersect.Client.Entities
                 mSound.UpdatePosition(mapx, mapy, mapId);
             }
 
-            if (dir > (Directions)(-1))
+            if (dir >= Direction.Up)
             {
                 mRenderDir = dir;
             }
@@ -460,7 +460,7 @@ namespace Intersect.Client.Entities
             return size;
         }
 
-        public void SetDir(Directions dir)
+        public void SetDir(Direction dir)
         {
             mRenderDir = dir;
         }

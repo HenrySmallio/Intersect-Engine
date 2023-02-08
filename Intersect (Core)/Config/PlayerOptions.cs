@@ -6,19 +6,14 @@
     public partial class PlayerOptions
     {
         /// <summary>
-        /// Intersect default for initial player bank slots
-        /// </summary>
-        public const int DefaultInitialBankSlots = 100;
-
-        /// <summary>
         /// Unlinks the timers for combat and movement to facilitate complex combat (e.g. kiting)
         /// </summary>
         public bool AllowCombatMovement { get; set; } = true;
 
         /// <summary>
-        /// Enables the client feature 'Auto-turn to target'.
+        /// When enabled, 'Auto-turn to target' is limited to entities within the front view of players.
         /// </summary>
-        public bool EnableAutoTurnToTarget { get; set; } = true;
+        public bool AutoTurnToTargetAccountDirection { get; set; } = false;
 
         /// <summary>
         /// Sets the delay (milliseconds) for the feature 'Auto-turn to target'.
@@ -26,9 +21,9 @@
         public ushort AutoTurnToTargetDelay { get; set; } = 500;
 
         /// <summary>
-        /// When enabled, 'Auto-turn to target' is limited to entities within 180° in the front view of players.
+        /// Enables the client feature 'Auto-turn to target'.
         /// </summary>
-        public bool AutoTurnToTargetLimited { get; set; } = false;
+        public bool EnableAutoTurnToTarget { get; set; } = true;
 
         /// <summary>
         /// Enables or disables friend login notifications when a user joins the game.
@@ -44,6 +39,11 @@
         /// A percentage between 0 and 100 which determines the experience that players will lose when they die.
         /// </summary>
         public int ExpLossOnDeathPercent { get; set; } = 0;
+
+        /// <summary>
+        /// Intersect default for initial player bank slots
+        /// </summary>
+        private const int DefaultInitialBankSlots = 100;
 
         /// <summary>
         /// Number of hotbar slots a player has.
@@ -96,10 +96,15 @@
         public bool ShowLevelByName { get; set; } = false;
 
         /// <summary>
-        /// Configures whether or not the game client skips the character select window upon login or going back
+        /// Configures whether or not the game client skips the character select window upon login or going back.
         /// to characters when the max number of characters allowed per account is one.
         /// </summary>
         public bool SkipCharacterSelect { get; set; } = false;
+
+        /// <summary>
+        /// When enabled, 'Auto-target switching' is limited to entities within the front view of players.
+        /// </summary>
+        public bool TargetAccountDirection { get; set; } = false;
 
         /// <summary>
         /// Distance (in tiles) between players in which a trade offer can be sent and accepted.

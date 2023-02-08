@@ -105,19 +105,6 @@ namespace Intersect.Client.Entities
         Dictionary<Entity, TargetInfo> mlastTargetList = new Dictionary<Entity, TargetInfo>(); // Entity, Last Time Selected
 
         Entity mLastEntitySelected = null;
-        
-        private readonly Directions[][] mOppositePlayerDirections =
-        {
-            new[] { Directions.Down, Directions.DownLeft, Directions.DownRight },
-            new[] { Directions.Up, Directions.UpLeft, Directions.UpRight },
-            new[] { Directions.Right, Directions.UpRight, Directions.DownRight },
-            new[] { Directions.Left, Directions.UpLeft, Directions.DownLeft },
-            
-            new[] { Directions.DownRight, Directions.Right },
-            new[] { Directions.DownLeft, Directions.Left },
-            new[] { Directions.UpLeft, Directions.Left },
-            new[] { Directions.UpRight, Directions.Right },
-        };
 
         private Dictionary<int, long> mLastHotbarUseTime = new Dictionary<int, long>();
         private int mHotbarUseDelay = 150;
@@ -1199,42 +1186,42 @@ namespace Intersect.Client.Entities
             }
 
 
-            Globals.Me.MoveDir = (Directions)(-1);
+            Globals.Me.MoveDir = (Direction)(-1);
             if (movex != 0f || movey != 0f)
             {
                 if (movey < 0)
                 {
                     if (movex < 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
                     {
-                        Globals.Me.MoveDir = Directions.DownLeft;
+                        Globals.Me.MoveDir = Direction.DownLeft;
                     }
                     else if (movex > 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
                     {
-                        Globals.Me.MoveDir = Directions.DownRight;
+                        Globals.Me.MoveDir = Direction.DownRight;
                     }
                     else
                     {
-                        Globals.Me.MoveDir = Directions.Down;
+                        Globals.Me.MoveDir = Direction.Down;
                     }
                 }
                 else if (movey > 0)
                 {
                     if (movex < 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
                     {
-                        Globals.Me.MoveDir = Directions.UpLeft;
+                        Globals.Me.MoveDir = Direction.UpLeft;
                     }
                     else if (movex > 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
                     {
-                        Globals.Me.MoveDir = Directions.UpRight;
+                        Globals.Me.MoveDir = Direction.UpRight;
                     }
                     else
                     {
-                        Globals.Me.MoveDir = Directions.Up;
+                        Globals.Me.MoveDir = Direction.Up;
                     }
                 }
                 else
                 {
-                    Globals.Me.MoveDir = movex < 0 ? Directions.Left : Directions.Right;
+                    Globals.Me.MoveDir = movex < 0 ? Direction.Left : Direction.Right;
                 }
             }
             
@@ -1382,33 +1369,36 @@ namespace Intersect.Client.Entities
             // Find all valid entities in the direction we are facing.
             var validEntities = Array.Empty<KeyValuePair<Entity, TargetInfo>>();
 
-            // TODO: Expose option to users
-            if (Globals.Database.TargetAccountDirection)
+            if (Options.Instance.PlayerOpts.TargetAccountDirection)
             {
                 switch (Dir)
                 {
-                    case Directions.Up:
+                    case Direction.Up:
                         validEntities = mlastTargetList.Where(en =>
-                            ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Left || en.Key.MapId == currentMap.Right) && en.Key.Y < Y) || en.Key.MapId == currentMap.Down)
+                                ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Left ||
+                                  en.Key.MapId == currentMap.Right) && en.Key.Y < Y) || en.Key.MapId == currentMap.Down)
                             .ToArray();
                         break;
 
-                    case Directions.Down:
+                    case Direction.Down:
                         validEntities = mlastTargetList.Where(en =>
-                            ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Left || en.Key.MapId == currentMap.Right) && en.Key.Y > Y) || en.Key.MapId == currentMap.Up)
+                                ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Left ||
+                                  en.Key.MapId == currentMap.Right) && en.Key.Y > Y) || en.Key.MapId == currentMap.Up)
                             .ToArray();
                         break;
 
-                    case Directions.Left:
+                    case Direction.Left:
                         validEntities = mlastTargetList.Where(en =>
-                            ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Up || en.Key.MapId == currentMap.Down) && en.Key.X < X) || en.Key.MapId == currentMap.Left)
+                                ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Up ||
+                                  en.Key.MapId == currentMap.Down) && en.Key.X < X) || en.Key.MapId == currentMap.Left)
                             .ToArray();
                         break;
 
-                    case Directions.Right:
+                    case Direction.Right:
                         validEntities = mlastTargetList.Where(en =>
-                                    ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Up || en.Key.MapId == currentMap.Down) && en.Key.X > X) || en.Key.MapId == currentMap.Right)
-                                    .ToArray();
+                                ((en.Key.MapId == MapId || en.Key.MapId == currentMap.Up ||
+                                  en.Key.MapId == currentMap.Down) && en.Key.X > X) || en.Key.MapId == currentMap.Right)
+                            .ToArray();
                         break;
                 }
             }
@@ -1529,13 +1519,13 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            if (Options.Instance.PlayerOpts.AutoTurnToTargetLimited &&
-                mOppositePlayerDirections[(int)Dir].Contains(directionToTarget))
+            if (Options.Instance.PlayerOpts.AutoTurnToTargetAccountDirection &&
+                IsTargetAtOppositeDirection(Dir, directionToTarget))
             {
                 return;
             }
 
-            MoveDir = (Directions)(-1);
+            MoveDir = (Direction)(-1);
             Dir = directionToTarget;
             PacketSender.SendDirection((byte)Dir);
         }
@@ -1588,38 +1578,38 @@ namespace Intersect.Client.Entities
 
             switch (Globals.Me.Dir)
             {
-                case Directions.Up:
+                case Direction.Up:
                     y--;
                     break;
 
-                case Directions.Down:
+                case Direction.Down:
                     y++;
                     break;
 
-                case Directions.Left:
+                case Direction.Left:
                     x--;
                     break;
 
-                case Directions.Right:
+                case Direction.Right:
                     x++;
                     break;
 
-                case Directions.UpLeft:
+                case Direction.UpLeft:
                     y--;
                     x--;
                     break;
 
-                case Directions.UpRight:
+                case Direction.UpRight:
                     y--;
                     x++;
                     break;
 
-                case Directions.DownRight:
+                case Direction.DownRight:
                     y++;
                     x++;
                     break;
 
-                case Directions.DownLeft:
+                case Direction.DownLeft:
                     y++;
                     x--;
                     break;
@@ -2053,7 +2043,7 @@ namespace Intersect.Client.Entities
             var tmpY = (sbyte)Y;
             IEntity blockedBy = null;
 
-            if (MoveDir > (Directions)(-1) && Globals.EventDialogs.Count == 0)
+            if (MoveDir >= Direction.Up && Globals.EventDialogs.Count == 0)
             {
                 //Try to move if able and not casting spells.
                 if (!IsMoving && MoveTimer < Timing.Global.Milliseconds &&
@@ -2066,93 +2056,93 @@ namespace Intersect.Client.Entities
 
                     switch (MoveDir)
                     {
-                        case Directions.Up:
+                        case Direction.Up:
                             if (IsTileBlocked(X, Y - 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY--;
                                 IsMoving = true;
-                                Dir = Directions.Up;
+                                Dir = Direction.Up;
                                 OffsetY = Options.TileHeight;
                                 OffsetX = 0;
                             }
 
                             break;
-                        case Directions.Down:
+                        case Direction.Down:
                             if (IsTileBlocked(X, Y + 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY++;
                                 IsMoving = true;
-                                Dir = Directions.Down;
+                                Dir = Direction.Down;
                                 OffsetY = -Options.TileHeight;
                                 OffsetX = 0;
                             }
 
                             break;
-                        case Directions.Left:
+                        case Direction.Left:
                             if (IsTileBlocked(X - 1, Y, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpX--;
                                 IsMoving = true;
-                                Dir = Directions.Left;
+                                Dir = Direction.Left;
                                 OffsetY = 0;
                                 OffsetX = Options.TileWidth;
                             }
 
                             break;
-                        case Directions.Right:
+                        case Direction.Right:
                             if (IsTileBlocked(X + 1, Y, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpX++;
                                 IsMoving = true;
-                                Dir = Directions.Right;
+                                Dir = Direction.Right;
                                 OffsetY = 0;
                                 OffsetX = -Options.TileWidth;
                             }
 
                             break;
-                        case Directions.UpLeft:
+                        case Direction.UpLeft:
                             if (IsTileBlocked(X - 1, Y - 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY--;
                                 tmpX--;
                                 IsMoving = true;
-                                Dir = Directions.UpLeft;
+                                Dir = Direction.UpLeft;
                                 OffsetY = Options.TileHeight;
                                 OffsetX = Options.TileWidth;
                             }
 
                             break;
-                        case Directions.UpRight:
+                        case Direction.UpRight:
                             if (IsTileBlocked(X + 1, Y - 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY--;
                                 tmpX++;
                                 IsMoving = true;
-                                Dir = Directions.UpRight;
+                                Dir = Direction.UpRight;
                                 OffsetY = Options.TileHeight;
                                 OffsetX = -Options.TileWidth;
                             }
 
                             break;
-                        case Directions.DownRight:
+                        case Direction.DownRight:
                             if (IsTileBlocked(X + 1, Y + 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY++;
                                 tmpX++;
                                 IsMoving = true;
-                                Dir = Directions.DownRight;
+                                Dir = Direction.DownRight;
                                 OffsetY = -Options.TileHeight;
                                 OffsetX = -Options.TileWidth;
                             }
 
                             break;
-                        case Directions.DownLeft:
+                        case Direction.DownLeft:
                             if (IsTileBlocked(X - 1, Y + 1, Z, MapId, ref blockedBy) == -1)
                             {
                                 tmpY++;
                                 tmpX--;
                                 IsMoving = true;
-                                Dir = Directions.DownLeft;
+                                Dir = Direction.DownLeft;
                                 OffsetY = -Options.TileHeight;
                                 OffsetX = Options.TileWidth;
                             }
@@ -2700,14 +2690,64 @@ namespace Intersect.Client.Entities
                 {
                     Dir = Globals.Me.MoveDir;
                     PacketSender.SendDirection((byte)Dir);
-                    Globals.Me.MoveDir = (Directions)(-1);
+                    Globals.Me.MoveDir = (Direction)(-1);
                 }
 
                 // Hold the player in place if the requested direction is the same as the current one.
                 if (!Globals.Me.IsMoving && Dir == Globals.Me.MoveDir)
                 {
-                    Globals.Me.MoveDir = (Directions)(-1);
+                    Globals.Me.MoveDir = (Direction)(-1);
                 }
+            }
+        }
+        
+        // Checks if the target is at the opposite direction of the current player's direction.
+        // The comparison also takes into account whether diagonal movement is enabled or not.
+        private static bool IsTargetAtOppositeDirection(Direction currentDir, Direction targetDir)
+        {
+            if (Options.Instance.MapOpts.EnableDiagonalMovement)
+            {
+                // If diagonal movement is enabled, check for the opposite direction for 8 directions.
+                switch (currentDir)
+                {
+                    case Direction.Up:
+                        return targetDir == Direction.Down || targetDir == Direction.DownLeft ||
+                               targetDir == Direction.DownRight;
+                    case Direction.Down:
+                        return targetDir == Direction.Up || targetDir == Direction.UpLeft ||
+                               targetDir == Direction.UpRight;
+                    case Direction.Left:
+                        return targetDir == Direction.Right || targetDir == Direction.UpRight ||
+                               targetDir == Direction.DownRight;
+                    case Direction.Right:
+                        return targetDir == Direction.Left || targetDir == Direction.UpLeft ||
+                               targetDir == Direction.DownLeft;
+                    case Direction.UpLeft:
+                        return targetDir == Direction.DownRight;
+                    case Direction.UpRight:
+                        return targetDir == Direction.DownLeft;
+                    case Direction.DownLeft:
+                        return targetDir == Direction.UpRight;
+                    case Direction.DownRight:
+                        return targetDir == Direction.UpLeft;
+                    default:
+                        return false;
+                }
+            }
+
+            // If diagonal movement is disabled, check for the opposite direction for 4 directions.
+            switch (currentDir)
+            {
+                case Direction.Up:
+                    return targetDir == Direction.Down;
+                case Direction.Down:
+                    return targetDir == Direction.Up;
+                case Direction.Left:
+                    return targetDir == Direction.Right;
+                case Direction.Right:
+                    return targetDir == Direction.Left;
+                default:
+                    return false;
             }
         }
     }
