@@ -610,7 +610,7 @@ namespace Intersect.Client.Maps
         }
 
         //Animations
-        public void AddTileAnimation(Guid animId, int tileX, int tileY, Direction dir = default, IEntity owner = null)
+        public void AddTileAnimation(Guid animId, int tileX, int tileY, Direction dir = Direction.None, IEntity owner = null)
         {
             var animBase = AnimationBase.Get(animId);
             if (animBase == null)

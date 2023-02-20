@@ -1150,7 +1150,7 @@ namespace Intersect.Server.Entities
 
         public void ChangeDir(Direction dir)
         {
-            if (dir == (Direction)(-1) || Dir == dir)
+            if (dir == Direction.None || Dir == dir)
             {
                 return;
             }

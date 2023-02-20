@@ -896,7 +896,7 @@ namespace Intersect.Server.Entities
                                     case PathfinderResult.Success:
 
                                         var dir = (Direction)mPathFinder.GetMove();
-                                        if (dir >= Direction.Up)
+                                        if (dir > Direction.None)
                                         {
                                             if (fleeing)
                                             {

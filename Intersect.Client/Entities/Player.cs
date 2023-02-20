@@ -1186,7 +1186,7 @@ namespace Intersect.Client.Entities
             }
 
 
-            Globals.Me.MoveDir = (Direction)(-1);
+            Globals.Me.MoveDir = Direction.None;
             if (movex != 0f || movey != 0f)
             {
                 if (movey < 0)
@@ -1525,7 +1525,7 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            MoveDir = (Direction)(-1);
+            MoveDir = Direction.None;
             Dir = directionToTarget;
             PacketSender.SendDirection((byte)Dir);
         }
@@ -2043,7 +2043,7 @@ namespace Intersect.Client.Entities
             var tmpY = (sbyte)Y;
             IEntity blockedBy = null;
 
-            if (MoveDir >= Direction.Up && Globals.EventDialogs.Count == 0)
+            if (MoveDir > Direction.None && Globals.EventDialogs.Count == 0)
             {
                 //Try to move if able and not casting spells.
                 if (!IsMoving && MoveTimer < Timing.Global.Milliseconds &&
@@ -2690,13 +2690,13 @@ namespace Intersect.Client.Entities
                 {
                     Dir = Globals.Me.MoveDir;
                     PacketSender.SendDirection((byte)Dir);
-                    Globals.Me.MoveDir = (Direction)(-1);
+                    Globals.Me.MoveDir = Direction.None;
                 }
 
                 // Hold the player in place if the requested direction is the same as the current one.
                 if (!Globals.Me.IsMoving && Dir == Globals.Me.MoveDir)
                 {
-                    Globals.Me.MoveDir = (Direction)(-1);
+                    Globals.Me.MoveDir = Direction.None;
                 }
             }
         }

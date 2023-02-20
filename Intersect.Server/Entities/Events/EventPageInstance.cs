@@ -395,7 +395,7 @@ namespace Intersect.Server.Entities.Events
                                 if (mPathFinder.Update(timeMs) == PathfinderResult.Success)
                                 {
                                     var pathDir = (Direction)mPathFinder.GetMove();
-                                    if (pathDir >= Direction.Up)
+                                    if (pathDir > Direction.None)
                                     {
                                         if (CanMove(pathDir) == -1)
                                         {
@@ -416,7 +416,7 @@ namespace Intersect.Server.Entities.Events
                             if (forPlayer != null && GlobalClone == null) //Local Event
                             {
                                 moveDir = GetDirectionTo(forPlayer);
-                                if (moveDir >= Direction.Up)
+                                if (moveDir > Direction.None)
                                 {
                                     switch (moveDir)
                                     {
@@ -471,7 +471,7 @@ namespace Intersect.Server.Entities.Events
                             if (forPlayer != null && GlobalClone == null) //Local Event
                             {
                                 lookDir = GetDirectionTo(forPlayer);
-                                if (lookDir >= Direction.Up)
+                                if (lookDir > Direction.None)
                                 {
                                     ChangeDir(lookDir);
                                     moved = true;
@@ -483,7 +483,7 @@ namespace Intersect.Server.Entities.Events
                             if (forPlayer != null && GlobalClone == null) //Local Event
                             {
                                 lookDir = GetDirectionTo(forPlayer);
-                                if (lookDir >= Direction.Up)
+                                if (lookDir > Direction.None)
                                 {
                                     switch (lookDir)
                                     {
@@ -778,7 +778,7 @@ namespace Intersect.Server.Entities.Events
             if (Player != null && GlobalClone == null) //Local Event
             {
                 lookDir = GetDirectionTo(Player);
-                if (lookDir >= Direction.Up)
+                if (lookDir > Direction.None)
                 {
                     ChangeDir(lookDir);
                 }

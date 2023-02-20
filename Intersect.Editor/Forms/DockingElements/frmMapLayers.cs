@@ -1065,7 +1065,7 @@ namespace Intersect.Editor.Forms.DockingElements
             grpSlide.Text = Strings.Attributes.Slide;
             lblSlideDir.Text = Strings.Attributes.Direction;
             cmbSlideDir.Items.Clear();
-            for (var i = (Direction)(-1); i < (Direction)4; i++)
+            for (var i = Direction.None; i < (Direction)4; i++)
             {
                 cmbSlideDir.Items.Add(Strings.Direction.dir[i]);
             }
@@ -1102,7 +1102,7 @@ namespace Intersect.Editor.Forms.DockingElements
             lblY.Text = Strings.Warping.y.ToString("");
             lblWarpDir.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (var i = (Direction)(-1); i < (Direction)4; i++)
+            for (var i = Direction.None; i < (Direction)4; i++)
             {
                 cmbDirection.Items.Add(Strings.Direction.dir[i]);
             }

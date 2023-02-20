@@ -319,7 +319,7 @@ namespace Intersect.Client.Entities
                 mSound.UpdatePosition(mapx, mapy, mapId);
             }
 
-            if (dir >= Direction.Up)
+            if (dir > Direction.None)
             {
                 mRenderDir = dir;
             }

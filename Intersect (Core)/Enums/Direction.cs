@@ -2,7 +2,9 @@ namespace Intersect.Enums
 {
     public enum Direction
     {
-        Up = 0,
+        None = -1,
+
+        Up,
 
         Down,
 

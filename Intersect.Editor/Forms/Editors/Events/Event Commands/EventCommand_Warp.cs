@@ -67,7 +67,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             lblDir.Text = Strings.Warping.direction.ToString("");
             btnVisual.Text = Strings.Warping.visual;
             cmbDirection.Items.Clear();
-            for (var i = (Direction)(-1); i < (Direction)4; i++)
+            for (var i = Direction.None; i < (Direction)4; i++)
             {
                 cmbDirection.Items.Add(Strings.Direction.dir[i]);
             }
