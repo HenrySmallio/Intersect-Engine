@@ -96,7 +96,7 @@
         public bool ShowLevelByName { get; set; } = false;
 
         /// <summary>
-        /// Configures whether or not the game client skips the character select window upon login or going back.
+        /// Configures whether or not the game client skips the character select window upon login or going back
         /// to characters when the max number of characters allowed per account is one.
         /// </summary>
         public bool SkipCharacterSelect { get; set; } = false;
