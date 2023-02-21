@@ -6,14 +6,13 @@
     public partial class PlayerOptions
     {
         /// <summary>
+        /// Default value for initial amount of player's bank slots.
+        /// </summary>
+        private const int DefaultInitialBankSlots = 100;
+
         /// Unlinks the timers for combat and movement to facilitate complex combat (e.g. kiting)
         /// </summary>
         public bool AllowCombatMovement { get; set; } = true;
-
-        /// <summary>
-        /// When enabled, 'Auto-turn to target' is limited to entities within the front view of players.
-        /// </summary>
-        public bool AutoTurnToTargetAccountDirection { get; set; } = false;
 
         /// <summary>
         /// Sets the delay (milliseconds) for the feature 'Auto-turn to target'.
@@ -41,11 +40,6 @@
         public int ExpLossOnDeathPercent { get; set; } = 0;
 
         /// <summary>
-        /// Intersect default for initial player bank slots
-        /// </summary>
-        private const int DefaultInitialBankSlots = 100;
-
-        /// <summary>
         /// Number of hotbar slots a player has.
         /// </summary>
         public int HotbarSlotCount { get; set; } = 10;
@@ -59,6 +53,11 @@
         /// A percentage between 0 and 100 which determines the chance in which they will lose any given item in their inventory when killed.
         /// </summary>
         public int ItemDropChance { get; set; } = 0;
+
+        /// <summary>
+        /// When enabled, 'Auto-turn to target' is limited to entities within the front view of players.
+        /// </summary>
+        public bool LimitAutoTurnToTarget { get; set; } = false;
 
         /// <summary>
         /// Number of characters an account may create.
@@ -86,7 +85,7 @@
         public int MaxStat { get; set; } = 255;
 
         /// <summary>
-        /// How long a player must wait before sending a trade/party/friend request after the first as been denied.
+        /// How long a player must wait before sending a trade/party/friend.
         /// </summary>
         public int RequestTimeout { get; set; } = 300000;
 
@@ -110,7 +109,5 @@
         /// Distance (in tiles) between players in which a trade offer can be sent and accepted.
         /// </summary>
         public int TradeRange { get; set; } = 6;
-
     }
-
 }

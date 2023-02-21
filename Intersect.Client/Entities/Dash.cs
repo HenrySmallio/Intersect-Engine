@@ -10,7 +10,7 @@ namespace Intersect.Client.Entities
     public partial class Dash : IDash
     {
 
-        private int mChangeDirection = -1;
+        private sbyte mChangeDirection = -1;
 
         private int mDashTime;
 
@@ -34,7 +34,7 @@ namespace Intersect.Client.Entities
 
         public float OffsetY => GetYOffset();
 
-        public Dash(Entity en, Guid endMapId, byte endX, byte endY, int dashTime, int changeDirection = -1)
+        public Dash(Entity en, Guid endMapId, byte endX, byte endY, int dashTime, sbyte changeDirection = (sbyte)Direction.None)
         {
             mChangeDirection = changeDirection;
             mEndMapId = endMapId;

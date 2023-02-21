@@ -1112,7 +1112,7 @@ namespace Intersect.Server.Entities
                         }
                         else if (Base.Movement == (int)NpcMovement.TurnRandomly)
                         {
-                            ChangeDir((Direction)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections));
+                            ChangeDir((Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections));
                             LastRandomMove = Timing.Global.Milliseconds + Randomization.Next(1000, 3000);
 
                             return;
@@ -1121,7 +1121,7 @@ namespace Intersect.Server.Entities
                         var i = (Direction)Randomization.Next(0, 1);
                         if (i == 0)
                         {
-                            i = (Direction)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
+                            i = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
                             if (CanMove(i) == -1)
                             {
                                 //check if NPC is snared or stunned

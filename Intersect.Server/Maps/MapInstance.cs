@@ -451,7 +451,7 @@ namespace Intersect.Server.Maps
             }
             else
             {
-                dir = (Direction)Randomization.Next(0, Options.Instance.MapOpts.MovementDirections);
+                dir = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
             }
 
             if (spawn.X >= 0 && spawn.Y >= 0)

@@ -478,7 +478,8 @@ namespace Intersect.Client.Entities.Projectiles
                                     Maps.MapInstance.Get(Spawns[s].SpawnMapId).GetY() +
                                     Spawns[s].SpawnY * Options.TileHeight +
                                     Spawns[s].OffsetY +
-                                    Options.TileHeight / 2, X, Y, MapId, Spawns[s].AutoRotate ? (Direction)Spawns[s].Dir : 0,
+                                    Options.TileHeight / 2, X, Y, MapId,
+                                    Spawns[s].AutoRotate ? (Direction)Spawns[s].Dir : Direction.Up,
                                     Spawns[s].Z
                                 );
 

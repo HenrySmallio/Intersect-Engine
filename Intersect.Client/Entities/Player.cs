@@ -1519,7 +1519,7 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            if (Options.Instance.PlayerOpts.AutoTurnToTargetAccountDirection &&
+            if (Options.Instance.PlayerOpts.LimitAutoTurnToTarget &&
                 IsTargetAtOppositeDirection(Dir, directionToTarget))
             {
                 return;
