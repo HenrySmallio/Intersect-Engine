@@ -1985,11 +1985,9 @@ namespace Intersect.Client.Entities
         /// <returns>direction to player's selected target</returns>
         protected Direction DirectionToTarget(Entity en)
         {
-            Direction newDir = Dir;
-
             if (en == null)
             {
-                return newDir;
+                return Dir;
             }
 
             int originY = Y;

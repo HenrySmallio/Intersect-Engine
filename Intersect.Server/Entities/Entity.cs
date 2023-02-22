@@ -2566,59 +2566,62 @@ namespace Intersect.Server.Entities
         // Check if the target is one tile away and within the same Z dimension.
         protected bool IsOneBlockAway(Entity target)
         {
+            if (Z != target.Z)
+            {
+                return false;
+            }
+
             var myTile = new TileHelper(MapId, X, Y);
             var enemyTile = new TileHelper(target.MapId, target.X, target.Y);
-            if (Z == target.Z)
+
+            myTile.Translate(0, -1); // Target Up
+            if (myTile.Matches(enemyTile))
             {
-                myTile.Translate(0, -1); // Target Up
+                return true;
+            }
+
+            myTile.Translate(0, 2); // Target Down
+            if (myTile.Matches(enemyTile))
+            {
+                return true;
+            }
+
+            myTile.Translate(-1, -1); // Target Left
+            if (myTile.Matches(enemyTile))
+            {
+                return true;
+            }
+
+            myTile.Translate(2, 0); // Target Right 
+            if (myTile.Matches(enemyTile))
+            {
+                return true;
+            }
+
+            if (Options.Instance.MapOpts.EnableDiagonalMovement)
+            {
+                myTile.Translate(-2, -1); // Target UpLeft
                 if (myTile.Matches(enemyTile))
                 {
                     return true;
                 }
 
-                myTile.Translate(0, 2); // Target Down
+                myTile.Translate(2, 0); // Target UpRight
                 if (myTile.Matches(enemyTile))
                 {
                     return true;
                 }
 
-                myTile.Translate(-1, -1); // Target Left
+                myTile.Translate(-2, 2); // Target DownLeft
                 if (myTile.Matches(enemyTile))
                 {
                     return true;
                 }
 
-                myTile.Translate(2, 0); // Target Right 
+                myTile.Translate(2, 0); // Target DownRight
                 if (myTile.Matches(enemyTile))
                 {
                     return true;
-                }
-
-                if (Options.Instance.MapOpts.EnableDiagonalMovement)
-                {
-                    myTile.Translate(-2, -1); // Target UpLeft
-                    if (myTile.Matches(enemyTile))
-                    {
-                        return true;
-                    }
-
-                    myTile.Translate(2, 0); // Target UpRight
-                    if (myTile.Matches(enemyTile))
-                    {
-                        return true;
-                    }
-
-                    myTile.Translate(-2, 2); // Target DownLeft
-                    if (myTile.Matches(enemyTile))
-                    {
-                        return true;
-                    }
-
-                    myTile.Translate(2, 0); // Target DownRight
-                    if (myTile.Matches(enemyTile))
-                    {
-                        return true;
-                    }
                 }
             }
 
@@ -2628,82 +2631,29 @@ namespace Intersect.Server.Entities
         //These functions only work when one block away.
         protected bool IsFacingTarget(Entity target)
         {
-            if (IsOneBlockAway(target.MapId, target.X, target.Y))
+            if (!IsOneBlockAway(target.MapId, target.X, target.Y))
             {
-                int dx = target.X - X;
-                int dy = target.Y - Y;
-                if (!Options.Instance.MapOpts.EnableDiagonalMovement)
-                {
-                    if (Math.Abs(dx) > Math.Abs(dy))
-                    {
-                        if (dx > 0 && Dir == Direction.Right)
-                        {
-                            return true;
-                        }
-
-                        if (dx < 0 && Dir == Direction.Left)
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        if (dy > 0 && Dir == Direction.Down)
-                        {
-                            return true;
-                        }
-
-                        if (dy < 0 && Dir == Direction.Up)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                else
-                {
-                    if (dx == 1 && dy == -1 && Dir == Direction.UpRight)
-                    {
-                        return true;
-                    }
-
-                    if (dx == 1 && dy == 1 && Dir == Direction.DownRight)
-                    {
-                        return true;
-                    }
-
-                    if (dx == -1 && dy == 1 && Dir == Direction.DownLeft)
-                    {
-                        return true;
-                    }
-
-                    if (dx == -1 && dy == -1 && Dir == Direction.UpLeft)
-                    {
-                        return true;
-                    }
-
-                    if (dx == 0 && dy == -1 && Dir == Direction.Up)
-                    {
-                        return true;
-                    }
-
-                    if (dx == 0 && dy == 1 && Dir == Direction.Down)
-                    {
-                        return true;
-                    }
-
-                    if (dx == 1 && dy == 0 && Dir == Direction.Right)
-                    {
-                        return true;
-                    }
-
-                    if (dx == -1 && dy == 0 && Dir == Direction.Left)
-                    {
-                        return true;
-                    }
-                }
+                return false;
             }
 
-            return false;
+            int dx = target.X - X;
+            int dy = target.Y - Y;
+            var diagonalMovement = Options.Instance.MapOpts.EnableDiagonalMovement;
+
+            switch (dx)
+            {
+                case 0 when dy == -1 && Dir == Direction.Up:
+                case 0 when dy == 1 && Dir == Direction.Down:
+                case 1 when dy == 0 && Dir == Direction.Right:
+                case -1 when dy == 0 && Dir == Direction.Left:
+                case 1 when diagonalMovement && dy == -1 && Dir == Direction.UpRight:
+                case -1 when diagonalMovement && dy == -1 && Dir == Direction.UpLeft:
+                case 1 when diagonalMovement && dy == 1 && Dir == Direction.DownRight:
+                case -1 when diagonalMovement && dy == 1 && Dir == Direction.DownLeft:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public int GetDistanceTo(Entity target)
@@ -2761,120 +2711,91 @@ namespace Intersect.Server.Entities
         {
         }
 
-        protected Direction DirToEnemy(Entity target)
+        protected Direction DirToEnemy(Entity en)
         {
-            //Calculate World Tile of Me
-            var x1 = X + MapController.Get(MapId).MapGridX * Options.MapWidth;
-            var y1 = Y + MapController.Get(MapId).MapGridY * Options.MapHeight;
-
-            //Calculate world tile of target
-            var x2 = target.X + MapController.Get(target.MapId).MapGridX * Options.MapWidth;
-            var y2 = target.Y + MapController.Get(target.MapId).MapGridY * Options.MapHeight;
-
-            // Determine the direction of attack based on the difference between the attacker and the target positions.
-            if (x1 - x2 < 0)
+            if (en == null)
             {
-                if (!Options.Instance.MapOpts.EnableDiagonalMovement)
+                return Dir;
+            }
+
+            int originY = Y;
+            int originX = X;
+            int targetY = en.Y;
+            int targetX = en.X;
+
+            // Calculate Y and X offset between origin and target if they're not on the same map instance.
+            if (en.MapInstanceId != MapInstanceId)
+            {
+                if (en.Map.MapGridY < Map.MapGridY)
                 {
-                    return Direction.Right;
+                    originY += Options.MapHeight - 1;
+                }
+                else if (en.Map.MapGridY > Map.MapGridY)
+                {
+                    targetY += Options.MapHeight - 1;
                 }
 
-                if (y1 - y2 < 0)
+                if (en.Map.MapGridX < Map.MapGridX)
                 {
-                    return Direction.DownRight;
+                    originX += Options.MapWidth - 1;
                 }
-
-                if (y1 - y2 > 0)
+                else if (en.Map.MapGridX > Map.MapGridX)
                 {
-                    return Direction.UpRight;
+                    targetX += (Options.MapWidth - 1);
                 }
             }
 
-            if (x1 - x2 > 0)
+            // Calculate the offset between origin and target along both of their axis.
+            int yDiff = originY - targetY;
+            int xDiff = originX - targetX;
+
+            // If Y offset is 0, direction is determined by X offset.
+            if (yDiff == 0)
             {
-                if (!Options.Instance.MapOpts.EnableDiagonalMovement)
-                {
-                    return Direction.Left;
-                }
-
-                if (y1 - y2 < 0)
-                {
-                    return Direction.DownLeft;
-                }
-
-                if (y1 - y2 > 0)
-                {
-                    return Direction.UpLeft;
-                }
+                return xDiff > 0 ? Direction.Left : Direction.Right;
             }
 
-            //Left or Right
-            if (y1 - y2 < 0)
+            // If X offset is 0 or If diagonal movement is disabled, direction is determined by Y offset.
+            if (xDiff == 0 || !Options.Instance.MapOpts.EnableDiagonalMovement)
             {
-                return Direction.Down;
+                return yDiff > 0 ? Direction.Up : Direction.Down;
             }
 
-            if (y1 - y2 > 0)
+            // If both X and Y offset are non-zero, direction is determined by both offsets.
+            int xSign = Math.Sign(xDiff);
+            int ySign = Math.Sign(yDiff);
+
+            if (xSign > 0)
             {
-                return Direction.Up;
+                return ySign > 0 ? Direction.UpLeft : Direction.DownLeft;
             }
 
-            return 0;
+            return ySign > 0 ? Direction.UpRight : Direction.DownRight;
         }
 
         protected bool IsOneBlockAway(Guid mapId, int x, int y, int z = 0)
         {
+            if (z != Z)
+            {
+                return false;
+            }
+
             var x1 = X + MapController.Get(MapId).MapGridX * Options.MapWidth;
             var y1 = Y + MapController.Get(MapId).MapGridY * Options.MapHeight;
-
             var x2 = x + MapController.Get(mapId).MapGridX * Options.MapWidth;
             var y2 = y + MapController.Get(mapId).MapGridY * Options.MapHeight;
 
-            if (z != Z) return false;
+            int dx = Math.Abs(x1 - x2);
+            int dy = Math.Abs(y1 - y2);
 
-            if (!Options.Instance.MapOpts.EnableDiagonalMovement)
+            if (dx == 1 && dy == 0 || dx == 0 && dy == 1)
             {
-                if (x1 == x2)
-                {
-                    if (y1 == y2 - 1 || y1 == y2 + 1)
-                    {
-                        return true;
-                    }
-                }
-
-                if (y1 == y2)
-                {
-                    if (x1 == x2 - 1 || x1 == x2 + 1)
-                    {
-                        return true;
-                    }
-                }
+                return true;
             }
-            else
-            {
-                if (y1 == y2)
-                {
-                    if (x1 == x2 - 1)
-                    {
-                        return true;
-                    }
-                    else if (x1 == x2 + 1)
-                    {
-                        return true;
-                    }
-                }
 
-                if (x1 == x2)
-                {
-                    if (y1 == y2 - 1)
-                    {
-                        return true;
-                    }
-                    else if (y1 == y2 + 1)
-                    {
-                        return true;
-                    }
-                }
+            if (Options.Instance.MapOpts.EnableDiagonalMovement && dx == 1 && dy == 1)
+            {
+                return true;
             }
 
             return false;

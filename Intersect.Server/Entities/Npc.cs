@@ -1067,7 +1067,7 @@ namespace Intersect.Server.Entities
                                 {
                                     if (tempTarget != null)
                                     {
-                                        if (Dir != DirToEnemy(tempTarget) && DirToEnemy(tempTarget) != default)
+                                        if (Dir != DirToEnemy(tempTarget) && DirToEnemy(tempTarget) != Direction.None)
                                         {
                                             ChangeDir(DirToEnemy(tempTarget));
                                         }
