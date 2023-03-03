@@ -94,27 +94,27 @@ namespace Intersect.Server.Entities.Combat
                 return;
             }
 
-            var deadAnimations = new List<KeyValuePair<Guid, sbyte>>();
-            var aliveAnimations = new List<KeyValuePair<Guid, sbyte>>();
+            var deadAnimations = new List<KeyValuePair<Guid, Direction>>();
+            var aliveAnimations = new List<KeyValuePair<Guid, Direction>>();
             if (SpellBase.TickAnimationId != Guid.Empty)
             {
-                var animation = new KeyValuePair<Guid, sbyte>(SpellBase.TickAnimationId, (sbyte)Direction.Up);
-                deadAnimations.Add(animation);
-                aliveAnimations.Add(animation);
-            } else if (SpellBase.HitAnimationId != Guid.Empty)
-            {
-                var animation = new KeyValuePair<Guid, sbyte>(SpellBase.HitAnimationId, (sbyte)Direction.Up);
+                var animation = new KeyValuePair<Guid, Direction>(SpellBase.TickAnimationId, Direction.Up);
                 deadAnimations.Add(animation);
                 aliveAnimations.Add(animation);
             }
-            
+            else if (SpellBase.HitAnimationId != Guid.Empty)
+            {
+                var animation = new KeyValuePair<Guid, Direction>(SpellBase.HitAnimationId, Direction.Up);
+                deadAnimations.Add(animation);
+                aliveAnimations.Add(animation);
+            }
 
             var damageHealth = SpellBase.Combat.VitalDiff[(int)Vitals.Health];
             var damageMana = SpellBase.Combat.VitalDiff[(int)Vitals.Mana];
 
             Attacker?.Attack(
                 Target, damageHealth, damageMana,
-                (DamageType) SpellBase.Combat.DamageType, (Stats) SpellBase.Combat.ScalingStat,
+                (DamageType)SpellBase.Combat.DamageType, (Stats)SpellBase.Combat.ScalingStat,
                 SpellBase.Combat.Scaling, SpellBase.Combat.CritChance, SpellBase.Combat.CritMultiplier, deadAnimations,
                 aliveAnimations, false
             );

@@ -114,7 +114,7 @@ namespace Intersect.Server.Maps
 
         // Items
         public ConcurrentDictionary<Guid, MapItemSpawn> ItemRespawns = new ConcurrentDictionary<Guid, MapItemSpawn>();
-        public ConcurrentDictionary<Guid, MapItem>[] TileItems { get; } = new ConcurrentDictionary<Guid, MapItem>[Options.Instance.MapOpts.Width * Options.Instance.MapOpts.Height];
+        public ConcurrentDictionary<Guid, MapItem>[] TileItems { get; } = new ConcurrentDictionary<Guid, MapItem>[Options.Instance.MapOpts.MapWidth * Options.Instance.MapOpts.MapHeight];
         public ConcurrentDictionary<Guid, MapItem> AllMapItems { get; } = new ConcurrentDictionary<Guid, MapItem>();
 
         // Resources
@@ -451,7 +451,7 @@ namespace Intersect.Server.Maps
             }
             else
             {
-                dir = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
+                dir = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
             }
 
             if (spawn.X >= 0 && spawn.Y >= 0)

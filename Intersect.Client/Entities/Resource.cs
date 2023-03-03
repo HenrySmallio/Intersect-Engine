@@ -146,13 +146,7 @@ namespace Intersect.Client.Entities
         }
 
         /// <inheritdoc />
-        public override bool CanBeAttacked
-        {
-            get
-            {
-                return !IsDead;
-            }
-        }
+        public override bool CanBeAttacked => !IsDead;
 
         public override HashSet<Entity> DetermineRenderOrder(HashSet<Entity> renderList, IMapInstance map)
         {

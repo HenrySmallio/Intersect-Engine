@@ -1441,12 +1441,12 @@ namespace Intersect.Client.Networking
                         if (animBase != null)
                         {
                             var animInstance = new Animation(
-                                animBase, false, packet.Direction != -1, -1, Globals.Entities[entityId]
+                                animBase, false, packet.Direction != Direction.None, -1, Globals.Entities[entityId]
                             );
 
-                            if (packet.Direction > -1)
+                            if (packet.Direction > Direction.None)
                             {
-                                animInstance.SetDir((Direction)packet.Direction);
+                                animInstance.SetDir(packet.Direction);
                             }
 
                             Globals.Entities[entityId].Animations.Add(animInstance);
@@ -1467,11 +1467,11 @@ namespace Intersect.Client.Networking
                             if (animBase != null)
                             {
                                 var animInstance = new Animation(
-                                    animBase, false, packet.Direction == -1, -1,
+                                    animBase, false, packet.Direction == Direction.None, -1,
                                     map.LocalEntities[entityId]
                                 );
 
-                                if (packet.Direction > -1)
+                                if (packet.Direction > Direction.None)
                                 {
                                     animInstance.SetDir((Direction)packet.Direction);
                                 }

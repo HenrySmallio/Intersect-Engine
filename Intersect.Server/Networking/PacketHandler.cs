@@ -1195,7 +1195,7 @@ namespace Intersect.Server.Networking
                 {
                     PacketSender.SendAnimationToProximity(
                         attackAnim.Id, -1, player.Id, attackingTile.GetMapId(), attackingTile.GetX(),
-                        attackingTile.GetY(), (sbyte)player.Dir, player.MapInstanceId
+                        attackingTile.GetY(), player.Dir, player.MapInstanceId
                     );
                 }
 
@@ -1284,7 +1284,7 @@ namespace Intersect.Server.Networking
                     {
                         PacketSender.SendAnimationToProximity(
                             classBase.AttackAnimationId, -1, player.Id, attackingTile.GetMapId(), attackingTile.GetX(),
-                            attackingTile.GetY(), (sbyte) player.Dir, player.MapInstanceId
+                            attackingTile.GetY(), player.Dir, player.MapInstanceId
                         );
                     }
                 }
@@ -3390,26 +3390,25 @@ namespace Intersect.Server.Networking
                             //Up
                             if (gridY - 1 >= 0 && grid.MyGrid[gridX, gridY - 1] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX, gridY - 1])?.ClearConnections((int) Direction.Down);
+                                MapController.Get(grid.MyGrid[gridX, gridY - 1])?.ClearConnections(Direction.Down);
                             }
 
                             //Down
                             if (gridY + 1 < grid.Height && grid.MyGrid[gridX, gridY + 1] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX, gridY + 1])?.ClearConnections((int) Direction.Up);
+                                MapController.Get(grid.MyGrid[gridX, gridY + 1])?.ClearConnections(Direction.Up);
                             }
 
                             //Left
                             if (gridX - 1 >= 0 && grid.MyGrid[gridX - 1, gridY] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX - 1, gridY])
-                                    ?.ClearConnections((int) Direction.Right);
+                                MapController.Get(grid.MyGrid[gridX - 1, gridY])?.ClearConnections(Direction.Right);
                             }
 
                             //Right
                             if (gridX + 1 < grid.Width && grid.MyGrid[gridX + 1, gridY] != Guid.Empty)
                             {
-                                MapController.Get(grid.MyGrid[gridX + 1, gridY]).ClearConnections((int) Direction.Left);
+                                MapController.Get(grid.MyGrid[gridX + 1, gridY])?.ClearConnections(Direction.Left);
                             }
 
                             DbInterface.GenerateMapGrids();

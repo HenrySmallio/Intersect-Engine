@@ -336,7 +336,7 @@ namespace Intersect.Server.Entities.Events
                         return;
                     }
 
-                    var dir = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
+                    var dir = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
                     if (CanMove(dir) == -1)
                     {
                         Move(dir, Player);
@@ -394,7 +394,7 @@ namespace Intersect.Server.Entities.Events
                                 //Todo check if next to or on top of player.. if so don't run pathfinder.
                                 if (mPathFinder.Update(timeMs) == PathfinderResult.Success)
                                 {
-                                    var pathDir = (Direction)mPathFinder.GetMove();
+                                    var pathDir = mPathFinder.GetMove();
                                     if (pathDir > Direction.None)
                                     {
                                         if (CanMove(pathDir) == -1)
@@ -446,7 +446,7 @@ namespace Intersect.Server.Entities.Events
                                     else
                                     {
                                         //Move Randomly
-                                        moveDir = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
+                                        moveDir = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
                                         if (CanMove(moveDir) == -1)
                                         {
                                             Move(moveDir, forPlayer);
@@ -457,7 +457,7 @@ namespace Intersect.Server.Entities.Events
                                 else
                                 {
                                     //Move Randomly
-                                    moveDir = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
+                                    moveDir = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
                                     if (CanMove(moveDir) == -1)
                                     {
                                         Move(moveDir, forPlayer);

@@ -61,7 +61,7 @@ namespace Intersect.Client.Entities
 
         private Guid[] _equipment = new Guid[Options.EquipmentSlots.Count];
 
-        private readonly float PythagoreanMultiplier = (float)Math.Sqrt(2);
+        private static readonly float UnitDiagonalLength = (float)Math.Sqrt(2);
 
         public Guid[] Equipment
         {
@@ -525,7 +525,7 @@ namespace Intersect.Client.Entities
             var time = 1000f / (float) (1 + Math.Log(Stat[(int) Stats.Speed]));
             if (Dir > Direction.Right)
             {
-                time *= PythagoreanMultiplier;
+                time *= UnitDiagonalLength;
             }
             if (IsBlocking)
             {
@@ -624,7 +624,7 @@ namespace Intersect.Client.Entities
             }
             else if (IsMoving)
             {
-                float displacementTime = ecTime * Options.TileHeight / GetMovementTime();
+                var displacementTime = ecTime * Options.TileHeight / GetMovementTime();
                 switch (Dir)
                 {
                     case Direction.Up:
@@ -1055,7 +1055,7 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            var d = PickSpriteRow(Dir);
+            var spriteRow = PickSpriteRow(Dir);
 
             var frameWidth = texture.GetWidth() / SpriteFrames;
             var frameHeight = texture.GetHeight() / Options.Instance.Sprites.Directions;
@@ -1072,7 +1072,7 @@ namespace Intersect.Client.Entities
                     : WalkFrame;
             }
 
-            var srcRectangle = new FloatRect(frame * frameWidth, d * frameHeight, frameWidth, frameHeight);
+            var srcRectangle = new FloatRect(frame * frameWidth, spriteRow * frameHeight, frameWidth, frameHeight);
             var destRectangle = new FloatRect(
                 (int)Math.Ceiling(Origin.X - frameWidth / 2f),
                 (int)Math.Ceiling(Origin.Y - frameHeight),
@@ -1083,9 +1083,9 @@ namespace Intersect.Client.Entities
             WorldPos = destRectangle;
 
             //Order the layers of paperdolls and sprites
-            for (var z = 0; z < Options.PaperdollOrder[d].Count; z++)
+            for (var z = 0; z < Options.PaperdollOrder[spriteRow].Count; z++)
             {
-                var paperdoll = Options.PaperdollOrder[d][z];
+                var paperdoll = Options.PaperdollOrder[spriteRow][z];
                 var equipSlot = Options.EquipmentSlots.IndexOf(paperdoll);
 
                 //Check for player
@@ -1131,22 +1131,24 @@ namespace Intersect.Client.Entities
         {
             switch (direction)
             {
-                case Direction.Down:
-                case Direction.DownLeft when mLastDirection != Direction.Left:
-                case Direction.DownRight when mLastDirection != Direction.Right:
-                    return 0;
                 case Direction.Left:
                 case Direction.DownLeft when mLastDirection == Direction.Left:
                 case Direction.UpLeft when mLastDirection == Direction.Left:
                     return 1;
+
                 case Direction.Right:
                 case Direction.DownRight when mLastDirection == Direction.Right:
                 case Direction.UpRight when mLastDirection == Direction.Right:
                     return 2;
+
                 case Direction.Up:
                 case Direction.UpLeft when mLastDirection != Direction.Left:
                 case Direction.UpRight when mLastDirection != Direction.Right:
                     return 3;
+
+                case Direction.Down:
+                case Direction.DownLeft when mLastDirection != Direction.Left:
+                case Direction.DownRight when mLastDirection != Direction.Right:
                 default:
                     return 0;
             }
@@ -1211,7 +1213,7 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            var d = PickSpriteRow(Dir);
+            var spriteRow = PickSpriteRow(Dir);
 
             var frameWidth = paperdollTex.GetWidth() / spriteFrames;
             var frameHeight = paperdollTex.GetHeight() / Options.Instance.Sprites.Directions;
@@ -1225,7 +1227,7 @@ namespace Intersect.Client.Entities
                     : WalkFrame;
             }
 
-            var srcRectangle = new FloatRect(frame * frameWidth, d * frameHeight, frameWidth, frameHeight);
+            var srcRectangle = new FloatRect(frame * frameWidth, spriteRow * frameHeight, frameWidth, frameHeight);
             var destRectangle = new FloatRect(
                 (int)Math.Ceiling(Center.X - frameWidth / 2f),
                 (int)Math.Ceiling(Center.Y - frameHeight / 2f),
@@ -2018,8 +2020,8 @@ namespace Intersect.Client.Entities
             }
 
             // Calculate the offset between origin and target along both of their axis.
-            int yDiff = originY - targetY;
-            int xDiff = originX - targetX;
+            var yDiff = originY - targetY;
+            var xDiff = originX - targetX;
 
             // If Y offset is 0, direction is determined by X offset.
             if (yDiff == 0)
@@ -2034,15 +2036,15 @@ namespace Intersect.Client.Entities
             }
 
             // If both X and Y offset are non-zero, direction is determined by both offsets.
-            int xSign = Math.Sign(xDiff);
-            int ySign = Math.Sign(yDiff);
+            var xPositive = xDiff > 0;
+            var yPositive = yDiff > 0;
 
-            if (xSign > 0)
+            if (xPositive)
             {
-                return ySign > 0 ? Direction.UpLeft : Direction.DownLeft;
+                return yPositive ? Direction.UpLeft : Direction.DownLeft;
             }
 
-            return ySign > 0 ? Direction.UpRight : Direction.DownRight;
+            return yPositive ? Direction.UpRight : Direction.DownRight;
         }
 
         //Movement

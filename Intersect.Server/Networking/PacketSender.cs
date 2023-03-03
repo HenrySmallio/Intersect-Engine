@@ -1460,7 +1460,7 @@ namespace Intersect.Server.Networking
             Guid mapId,
             byte x,
             byte y,
-            sbyte direction,
+            Direction direction,
             Guid mapInstanceId
         )
         {

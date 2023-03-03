@@ -233,7 +233,7 @@ namespace Intersect.Server.Entities
         public long MoveTimer { get; set; }
         
         [NotMapped, JsonIgnore]
-        private readonly float PythagoreanMultiplier = (float) Math.Sqrt(2);
+        private static readonly float UnitDiagonalLength = (float) Math.Sqrt(2);
 
         [NotMapped, JsonIgnore]
         public bool Passable { get; set; } = false;
@@ -661,7 +661,7 @@ namespace Intersect.Server.Entities
 
                         break;
                     case MoveRouteEnum.MoveRandomly:
-                        var dir = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
+                        var dir = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
                         if (CanMove(dir) == -1)
                         {
                             Move(dir, forPlayer);
@@ -865,7 +865,7 @@ namespace Intersect.Server.Entities
 
                         break;
                     case MoveRouteEnum.TurnRandomly:
-                        ChangeDir((Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections));
+                        ChangeDir((Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections));
                         moved = true;
 
                         break;
@@ -920,11 +920,12 @@ namespace Intersect.Server.Entities
         //Returns the amount of time required to traverse 1 tile
         public virtual float GetMovementTime()
         {
-            var time = 1000f / (float) (1 + Math.Log(Stat[(int) Stats.Speed].Value()));
+            var time = 1000f / (float)(1 + Math.Log(Stat[(int)Stats.Speed].Value()));
             if (Dir > Direction.Right)
             {
-                time *= PythagoreanMultiplier;
+                time *= UnitDiagonalLength;
             }
+
             if (Blocking)
             {
                 time += time * Options.BlockingSlow;
@@ -1574,8 +1575,8 @@ namespace Intersect.Server.Entities
                 }
             }
 
-            var deadAnimations = new List<KeyValuePair<Guid, sbyte>>();
-            var aliveAnimations = new List<KeyValuePair<Guid, sbyte>>();
+            var deadAnimations = new List<KeyValuePair<Guid, Direction>>();
+            var aliveAnimations = new List<KeyValuePair<Guid, Direction>>();
 
             //Only count safe zones and friendly fire if its a dangerous spell! (If one has been used)
             if (!spellBase.Combat.Friendly &&
@@ -1640,8 +1641,8 @@ namespace Intersect.Server.Entities
             if (spellBase.HitAnimationId != Guid.Empty &&
                 (spellBase.Combat.Effect != StatusTypes.OnHit || onHitTrigger))
             {
-                deadAnimations.Add(new KeyValuePair<Guid, sbyte>(spellBase.HitAnimationId, (sbyte) Direction.Up));
-                aliveAnimations.Add(new KeyValuePair<Guid, sbyte>(spellBase.HitAnimationId, (sbyte) Direction.Up));
+                deadAnimations.Add(new KeyValuePair<Guid, Direction>(spellBase.HitAnimationId, (sbyte) Direction.Up));
+                aliveAnimations.Add(new KeyValuePair<Guid, Direction>(spellBase.HitAnimationId, (sbyte) Direction.Up));
             }
 
             var statBuffTime = -1;
@@ -1753,7 +1754,7 @@ namespace Intersect.Server.Entities
             }
         }
 
-        private void Animate(Entity target, List<KeyValuePair<Guid, sbyte>> animations)
+        private void Animate(Entity target, List<KeyValuePair<Guid, Direction>> animations)
         {
             foreach (var anim in animations)
             {
@@ -1768,18 +1769,16 @@ namespace Intersect.Server.Entities
         }
 
         //Attack using a weapon or unarmed
-        public virtual void TryAttack(
-            Entity target,
+        public virtual void TryAttack(Entity target,
             int baseDamage,
             DamageType damageType,
             Stats scalingStat,
             int scaling,
             int critChance,
             double critMultiplier,
-            List<KeyValuePair<Guid, sbyte>> deadAnimations = null,
-            List<KeyValuePair<Guid, sbyte>> aliveAnimations = null,
-            ItemBase weapon = null
-        )
+            List<KeyValuePair<Guid, Direction>> deadAnimations = null,
+            List<KeyValuePair<Guid, Direction>> aliveAnimations = null,
+            ItemBase weapon = null)
         {
             if (AttackTimer > Timing.Global.Milliseconds)
             {
@@ -1857,8 +1856,8 @@ namespace Intersect.Server.Entities
             int scaling,
             int critChance,
             double critMultiplier,
-            List<KeyValuePair<Guid, sbyte>> deadAnimations = null,
-            List<KeyValuePair<Guid, sbyte>> aliveAnimations = null,
+            List<KeyValuePair<Guid, Direction>> deadAnimations = null,
+            List<KeyValuePair<Guid, Direction>> aliveAnimations = null,
             bool isAutoAttack = false
         )
         {
@@ -2321,7 +2320,7 @@ namespace Intersect.Server.Entities
                             if (spellBase.HitAnimationId != Guid.Empty && spellBase.Combat.Effect != StatusTypes.OnHit)
                             {
                                 PacketSender.SendAnimationToProximity(
-                                    spellBase.HitAnimationId, 1, Id, MapId, 0, 0, (sbyte) Dir, MapInstanceId
+                                    spellBase.HitAnimationId, 1, Id, MapId, 0, 0, Dir, MapInstanceId
                                 ); //Target Type 1 will be global entity
                             }
 
@@ -2746,8 +2745,8 @@ namespace Intersect.Server.Entities
             }
 
             // Calculate the offset between origin and target along both of their axis.
-            int yDiff = originY - targetY;
-            int xDiff = originX - targetX;
+            var yDiff = originY - targetY;
+            var xDiff = originX - targetX;
 
             // If Y offset is 0, direction is determined by X offset.
             if (yDiff == 0)
@@ -2762,15 +2761,15 @@ namespace Intersect.Server.Entities
             }
 
             // If both X and Y offset are non-zero, direction is determined by both offsets.
-            int xSign = Math.Sign(xDiff);
-            int ySign = Math.Sign(yDiff);
+            var xPositive = xDiff > 0;
+            var yPositive = yDiff > 0;
 
-            if (xSign > 0)
+            if (xPositive)
             {
-                return ySign > 0 ? Direction.UpLeft : Direction.DownLeft;
+                return yPositive ? Direction.UpLeft : Direction.DownLeft;
             }
 
-            return ySign > 0 ? Direction.UpRight : Direction.DownRight;
+            return yPositive ? Direction.UpRight : Direction.DownRight;
         }
 
         protected bool IsOneBlockAway(Guid mapId, int x, int y, int z = 0)

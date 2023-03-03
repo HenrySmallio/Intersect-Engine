@@ -915,13 +915,13 @@ namespace Intersect.Server.Entities.Events
             var mapId = command.MapId;
             var tileX = 0;
             var tileY = 0;
-            var direction = (byte) Direction.Up;
+            var direction = Direction.Up;
             var targetEntity = (Entity) player;
             if (mapId != Guid.Empty)
             {
                 tileX = command.X;
                 tileY = command.Y;
-                direction = command.Dir;
+                direction = (Direction)command.Dir;
             }
             else
             {
@@ -982,7 +982,7 @@ namespace Intersect.Server.Entities.Events
                                 break;
                         }
 
-                        direction = (byte) targetEntity.Dir;
+                        direction = targetEntity.Dir;
                     }
 
                     mapId = targetEntity.MapId;
@@ -999,7 +999,7 @@ namespace Intersect.Server.Entities.Events
             if (tile.TryFix())
             {
                 PacketSender.SendAnimationToProximity(
-                    animId, -1, Guid.Empty, tile.GetMapId(), tile.GetX(), tile.GetY(), (sbyte) direction, player.MapInstanceId
+                    animId, -1, Guid.Empty, tile.GetMapId(), tile.GetX(), tile.GetY(), direction, player.MapInstanceId
                 );
             }
         }

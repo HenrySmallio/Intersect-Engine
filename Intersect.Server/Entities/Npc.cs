@@ -388,8 +388,8 @@ namespace Intersect.Server.Entities
                 return;
             }
 
-            var deadAnimations = new List<KeyValuePair<Guid, sbyte>>();
-            var aliveAnimations = new List<KeyValuePair<Guid, sbyte>>();
+            var deadAnimations = new List<KeyValuePair<Guid, Direction>>();
+            var aliveAnimations = new List<KeyValuePair<Guid, Direction>>();
 
             //We were forcing at LEAST 1hp base damage.. but then you can't have guards that won't hurt the player.
             //https://www.ascensiongamedev.com/community/bug_tracker/intersect/npc-set-at-0-attack-damage-still-damages-player-by-1-initially-r915/
@@ -398,8 +398,8 @@ namespace Intersect.Server.Entities
                 if (Base.AttackAnimation != null)
                 {
                     PacketSender.SendAnimationToProximity(
-                        Base.AttackAnimationId, -1, Guid.Empty, target.MapId, (byte) target.X, (byte) target.Y,
-                        (sbyte) Dir, target.MapInstanceId
+                        Base.AttackAnimationId, -1, Guid.Empty, target.MapId, (byte)target.X, (byte)target.Y, Dir,
+                        target.MapInstanceId
                     );
                 }
 
@@ -704,7 +704,7 @@ namespace Intersect.Server.Entities
 
             if (spellBase.CastAnimationId != Guid.Empty)
             {
-                PacketSender.SendAnimationToProximity(spellBase.CastAnimationId, 1, Id, MapId, 0, 0, (sbyte) Dir, MapInstanceId);
+                PacketSender.SendAnimationToProximity(spellBase.CastAnimationId, 1, Id, MapId, 0, 0, Dir, MapInstanceId);
 
                 //Target Type 1 will be global entity
             }
@@ -895,7 +895,7 @@ namespace Intersect.Server.Entities
                                 {
                                     case PathfinderResult.Success:
 
-                                        var dir = (Direction)mPathFinder.GetMove();
+                                        var dir = mPathFinder.GetMove();
                                         if (dir > Direction.None)
                                         {
                                             if (fleeing)
@@ -1112,7 +1112,7 @@ namespace Intersect.Server.Entities
                         }
                         else if (Base.Movement == (int)NpcMovement.TurnRandomly)
                         {
-                            ChangeDir((Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections));
+                            ChangeDir((Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections));
                             LastRandomMove = Timing.Global.Milliseconds + Randomization.Next(1000, 3000);
 
                             return;
@@ -1121,7 +1121,7 @@ namespace Intersect.Server.Entities
                         var i = (Direction)Randomization.Next(0, 1);
                         if (i == 0)
                         {
-                            i = (Direction)Randomization.Next((int)Direction.None, Options.Instance.MapOpts.MovementDirections);
+                            i = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
                             if (CanMove(i) == -1)
                             {
                                 //check if NPC is snared or stunned

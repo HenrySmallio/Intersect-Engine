@@ -1191,32 +1191,24 @@ namespace Intersect.Client.Entities
             {
                 if (movey < 0)
                 {
-                    if (movex < 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
-                    {
-                        Globals.Me.MoveDir = Direction.DownLeft;
-                    }
-                    else if (movex > 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
-                    {
-                        Globals.Me.MoveDir = Direction.DownRight;
-                    }
-                    else
+                    if (movex == 0)
                     {
                         Globals.Me.MoveDir = Direction.Down;
+                    }
+                    else if (Options.Instance.MapOpts.EnableDiagonalMovement)
+                    {
+                        Globals.Me.MoveDir = movex < 0 ? Direction.DownLeft : Direction.DownRight;
                     }
                 }
                 else if (movey > 0)
                 {
-                    if (movex < 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
-                    {
-                        Globals.Me.MoveDir = Direction.UpLeft;
-                    }
-                    else if (movex > 0 && Options.Instance.MapOpts.EnableDiagonalMovement)
-                    {
-                        Globals.Me.MoveDir = Direction.UpRight;
-                    }
-                    else
+                    if (movex == 0)
                     {
                         Globals.Me.MoveDir = Direction.Up;
+                    }
+                    else if (Options.Instance.MapOpts.EnableDiagonalMovement)
+                    {
+                        Globals.Me.MoveDir = movex < 0 ? Direction.UpLeft : Direction.UpRight;
                     }
                 }
                 else
@@ -1527,7 +1519,7 @@ namespace Intersect.Client.Entities
 
             MoveDir = Direction.None;
             Dir = directionToTarget;
-            PacketSender.SendDirection((byte)Dir);
+            PacketSender.SendDirection(Dir);
         }
 
         public bool TryBlock()
@@ -1620,14 +1612,8 @@ namespace Intersect.Client.Entities
                 // Iterate through all entities
                 foreach (var en in Globals.Entities)
                 {
-                    // Skip if the entity is null.
-                    if (en.Value == null)
-                    {
-                        continue;
-                    }
-
-                    // Skip if the entity is not within the player's map.
-                    if (en.Value.MapId != map)
+                    // Skip if the entity is null or is not within the player's map.
+                    if (en.Value?.MapId != map)
                     {
                         continue;
                     }
@@ -2043,185 +2029,161 @@ namespace Intersect.Client.Entities
             var tmpY = (sbyte)Y;
             IEntity blockedBy = null;
 
-            if (MoveDir > Direction.None && Globals.EventDialogs.Count == 0)
+            if (MoveDir <= Direction.None || Globals.EventDialogs.Count != 0)
             {
-                //Try to move if able and not casting spells.
-                if (!IsMoving && MoveTimer < Timing.Global.Milliseconds &&
-                    (Options.Combat.MovementCancelsCast || !IsCasting))
+                return;
+            }
+
+            //Try to move if able and not casting spells.
+            if (IsMoving || MoveTimer >= Timing.Global.Milliseconds ||
+                (!Options.Combat.MovementCancelsCast && IsCasting))
+            {
+                return;
+            }
+
+            if (Options.Combat.MovementCancelsCast)
+            {
+                CastTime = 0;
+            }
+
+            var deltaX = 0;
+            var deltaY = 0;
+
+            switch (MoveDir)
+            {
+                case Direction.Up:
+                    deltaX = 0;
+                    deltaY = -1;
+                    break;
+                case Direction.Down:
+                    deltaX = 0;
+                    deltaY = 1;
+                    break;
+                case Direction.Left:
+                    deltaX = -1;
+                    deltaY = 0;
+                    break;
+                case Direction.Right:
+                    deltaX = 1;
+                    deltaY = 0;
+                    break;
+                case Direction.UpLeft:
+                    deltaX = -1;
+                    deltaY = -1;
+                    break;
+                case Direction.UpRight:
+                    deltaX = 1;
+                    deltaY = -1;
+                    break;
+                case Direction.DownLeft:
+                    deltaX = -1;
+                    deltaY = 1;
+                    break;
+                case Direction.DownRight:
+                    deltaX = 1;
+                    deltaY = 1;
+                    break;
+            }
+
+            if (deltaX != 0 || deltaY != 0)
+            {
+                var newX = tmpX + deltaX;
+                var newY = tmpY + deltaY;
+                if (IsTileBlocked(newX, newY, Z, MapId, ref blockedBy) == -1)
                 {
-                    if (Options.Combat.MovementCancelsCast)
+                    tmpX += (sbyte)deltaX;
+                    tmpY += (sbyte)deltaY;
+                    IsMoving = true;
+                    Dir = MoveDir;
+                    if (deltaX == 0)
                     {
-                        CastTime = 0;
-                    }
-
-                    switch (MoveDir)
-                    {
-                        case Direction.Up:
-                            if (IsTileBlocked(X, Y - 1, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpY--;
-                                IsMoving = true;
-                                Dir = Direction.Up;
-                                OffsetY = Options.TileHeight;
-                                OffsetX = 0;
-                            }
-
-                            break;
-                        case Direction.Down:
-                            if (IsTileBlocked(X, Y + 1, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpY++;
-                                IsMoving = true;
-                                Dir = Direction.Down;
-                                OffsetY = -Options.TileHeight;
-                                OffsetX = 0;
-                            }
-
-                            break;
-                        case Direction.Left:
-                            if (IsTileBlocked(X - 1, Y, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpX--;
-                                IsMoving = true;
-                                Dir = Direction.Left;
-                                OffsetY = 0;
-                                OffsetX = Options.TileWidth;
-                            }
-
-                            break;
-                        case Direction.Right:
-                            if (IsTileBlocked(X + 1, Y, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpX++;
-                                IsMoving = true;
-                                Dir = Direction.Right;
-                                OffsetY = 0;
-                                OffsetX = -Options.TileWidth;
-                            }
-
-                            break;
-                        case Direction.UpLeft:
-                            if (IsTileBlocked(X - 1, Y - 1, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpY--;
-                                tmpX--;
-                                IsMoving = true;
-                                Dir = Direction.UpLeft;
-                                OffsetY = Options.TileHeight;
-                                OffsetX = Options.TileWidth;
-                            }
-
-                            break;
-                        case Direction.UpRight:
-                            if (IsTileBlocked(X + 1, Y - 1, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpY--;
-                                tmpX++;
-                                IsMoving = true;
-                                Dir = Direction.UpRight;
-                                OffsetY = Options.TileHeight;
-                                OffsetX = -Options.TileWidth;
-                            }
-
-                            break;
-                        case Direction.DownRight:
-                            if (IsTileBlocked(X + 1, Y + 1, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpY++;
-                                tmpX++;
-                                IsMoving = true;
-                                Dir = Direction.DownRight;
-                                OffsetY = -Options.TileHeight;
-                                OffsetX = -Options.TileWidth;
-                            }
-
-                            break;
-                        case Direction.DownLeft:
-                            if (IsTileBlocked(X - 1, Y + 1, Z, MapId, ref blockedBy) == -1)
-                            {
-                                tmpY++;
-                                tmpX--;
-                                IsMoving = true;
-                                Dir = Direction.DownLeft;
-                                OffsetY = -Options.TileHeight;
-                                OffsetX = Options.TileWidth;
-                            }
-
-                            break;
-                    }
-
-                    if (blockedBy != mLastBumpedEvent)
-                    {
-                        mLastBumpedEvent = null;
-                    }
-
-                    if (IsMoving)
-                    {
-                        if (tmpX < 0 || tmpY < 0 || tmpX > Options.MapWidth - 1 || tmpY > Options.MapHeight - 1)
-                        {
-                            var gridX = Maps.MapInstance.Get(Globals.Me.MapId).GridX;
-                            var gridY = Maps.MapInstance.Get(Globals.Me.MapId).GridY;
-                            if (tmpX < 0)
-                            {
-                                gridX--;
-                                X = (byte)(Options.MapWidth - 1);
-                            }
-                            else if (tmpX >= Options.MapWidth)
-                            {
-                                X = 0;
-                                gridX++;
-                            }
-                            else
-                            {
-                                X = (byte)tmpX;
-                            }
-
-                            if (tmpY < 0)
-                            {
-                                gridY--;
-                                Y = (byte)(Options.MapHeight - 1);
-                            }
-                            else if (tmpY >= Options.MapHeight)
-                            {
-                                Y = 0;
-                                gridY++;
-                            }
-                            else
-                            {
-                                Y = (byte)tmpY;
-                            }
-
-                            if (MapId != Globals.MapGrid[gridX, gridY])
-                            {
-                                MapId = Globals.MapGrid[gridX, gridY];
-                                FetchNewMaps();
-                            }
-
-                        }
-                        else
-                        {
-                            X = (byte)tmpX;
-                            Y = (byte)tmpY;
-                        }
-
-                        TryToChangeDimension();
-                        PacketSender.SendMove();
-                        MoveTimer = (Timing.Global.Milliseconds) + (long)GetMovementTime();
+                        OffsetX = 0;
                     }
                     else
                     {
-                        if (MoveDir != Dir)
-                        {
-                            Dir = MoveDir;
-                            PacketSender.SendDirection((byte)Dir);
-                        }
-
-                        if (blockedBy != null && mLastBumpedEvent != blockedBy && blockedBy is Event)
-                        {
-                            PacketSender.SendBumpEvent(blockedBy.MapId, blockedBy.Id);
-                            mLastBumpedEvent = blockedBy as Entity;
-                        }
+                        OffsetX = deltaX > 0 ? -Options.TileWidth : Options.TileWidth;
                     }
+
+                    if (deltaY == 0)
+                    {
+                        OffsetY = 0;
+                    }
+                    else
+                    {
+                        OffsetY = deltaY > 0 ? -Options.TileHeight : Options.TileHeight;
+                    }
+                }
+            }
+
+            if (blockedBy != mLastBumpedEvent)
+            {
+                mLastBumpedEvent = null;
+            }
+
+            if (IsMoving)
+            {
+                if (tmpX < 0 || tmpY < 0 || tmpX > Options.MapWidth - 1 || tmpY > Options.MapHeight - 1)
+                {
+                    var gridX = Maps.MapInstance.Get(Globals.Me.MapId).GridX;
+                    var gridY = Maps.MapInstance.Get(Globals.Me.MapId).GridY;
+                    if (tmpX < 0)
+                    {
+                        gridX--;
+                        X = (byte)(Options.MapWidth - 1);
+                    }
+                    else if (tmpX >= Options.MapWidth)
+                    {
+                        X = 0;
+                        gridX++;
+                    }
+                    else
+                    {
+                        X = (byte)tmpX;
+                    }
+
+                    if (tmpY < 0)
+                    {
+                        gridY--;
+                        Y = (byte)(Options.MapHeight - 1);
+                    }
+                    else if (tmpY >= Options.MapHeight)
+                    {
+                        Y = 0;
+                        gridY++;
+                    }
+                    else
+                    {
+                        Y = (byte)tmpY;
+                    }
+
+                    if (MapId != Globals.MapGrid[gridX, gridY])
+                    {
+                        MapId = Globals.MapGrid[gridX, gridY];
+                        FetchNewMaps();
+                    }
+                }
+                else
+                {
+                    X = (byte)tmpX;
+                    Y = (byte)tmpY;
+                }
+
+                TryToChangeDimension();
+                PacketSender.SendMove();
+                MoveTimer = (Timing.Global.Milliseconds) + (long)GetMovementTime();
+            }
+            else
+            {
+                if (MoveDir != Dir)
+                {
+                    Dir = MoveDir;
+                    PacketSender.SendDirection(Dir);
+                }
+
+                if (blockedBy != null && mLastBumpedEvent != blockedBy && blockedBy is Event)
+                {
+                    PacketSender.SendBumpEvent(blockedBy.MapId, blockedBy.Id);
+                    mLastBumpedEvent = blockedBy as Entity;
                 }
             }
         }
@@ -2689,7 +2651,7 @@ namespace Intersect.Client.Entities
                 if (!Globals.Me.IsMoving && Dir != Globals.Me.MoveDir)
                 {
                     Dir = Globals.Me.MoveDir;
-                    PacketSender.SendDirection((byte)Dir);
+                    PacketSender.SendDirection(Dir);
                     Globals.Me.MoveDir = Direction.None;
                 }
 

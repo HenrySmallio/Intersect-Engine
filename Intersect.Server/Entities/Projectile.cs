@@ -433,8 +433,8 @@ namespace Intersect.Server.Entities
 
             //Check Map Entities For Hits
             var map = MapController.Get(spawn.MapId);
-            if ((int)spawn.X < 0 || (int)spawn.X >= Options.Instance.MapOpts.Width ||
-                (int)spawn.Y < 0 || (int)spawn.Y >= Options.Instance.MapOpts.Height)
+            if ((int)spawn.X < 0 || (int)spawn.X >= Options.Instance.MapOpts.MapWidth ||
+                (int)spawn.Y < 0 || (int)spawn.Y >= Options.Instance.MapOpts.MapHeight)
             {
                 return false;
             }
