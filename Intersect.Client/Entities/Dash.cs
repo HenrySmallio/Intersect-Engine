@@ -1,6 +1,7 @@
 ﻿using System;
 using Intersect.Client.Framework.Entities;
 using Intersect.Client.Maps;
+using Intersect.Enums;
 using Intersect.Utilities;
 
 namespace Intersect.Client.Entities
@@ -33,7 +34,7 @@ namespace Intersect.Client.Entities
 
         public float OffsetY => GetYOffset();
 
-        public Dash(Entity en, Guid endMapId, byte endX, byte endY, int dashTime, int changeDirection = -1)
+        public Dash(Entity en, Guid endMapId, byte endX, byte endY, int dashTime, int changeDirection = (int)Direction.None)
         {
             mChangeDirection = changeDirection;
             mEndMapId = endMapId;
@@ -61,7 +62,7 @@ namespace Intersect.Client.Entities
                 mEndYCoord = endMap.GetY() + mEndY * Options.TileHeight - (startMap.GetY() + en.Y * Options.TileHeight);
                 if (mChangeDirection > -1)
                 {
-                    en.Dir = (byte)mChangeDirection;
+                    en.Dir = (Direction)mChangeDirection;
                 }
             }
         }

@@ -259,9 +259,9 @@ namespace Intersect.Editor.Forms.Editors
             lblY.Text = Strings.Warping.y.ToString("");
             lblWarpDir.Text = Strings.Warping.direction.ToString("");
             cmbDirection.Items.Clear();
-            for (var i = -1; i < 4; i++)
+            for (Direction i = Direction.None; i < (Direction)4; i++)
             {
-                cmbDirection.Items.Add(Strings.Directions.dir[i]);
+                cmbDirection.Items.Add(Strings.Direction.dir[i]);
             }
 
             btnVisualMapSelector.Text = Strings.Warping.visual;

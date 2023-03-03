@@ -6,24 +6,23 @@
     public partial class PlayerOptions
     {
         /// <summary>
-        /// Intersect default for initial player bank slots
+        /// Default value for initial amount of player's bank slots.
         /// </summary>
-        public const int DefaultInitialBankSlots = 100;
+        private const int DefaultInitialBankSlots = 100;
 
-        /// <summary>
         /// Unlinks the timers for combat and movement to facilitate complex combat (e.g. kiting)
         /// </summary>
         public bool AllowCombatMovement { get; set; } = true;
 
         /// <summary>
-        /// Enables the client feature 'Auto-turn to target'.
-        /// </summary>
-        public bool EnableAutoTurnToTarget { get; set; } = true;
-
-        /// <summary>
         /// Sets the delay (milliseconds) for the feature 'Auto-turn to target'.
         /// </summary>
         public ushort AutoTurnToTargetDelay { get; set; } = 500;
+
+        /// <summary>
+        /// Enables the client feature 'Auto-turn to target'.
+        /// </summary>
+        public bool EnableAutoTurnToTarget { get; set; } = true;
 
         /// <summary>
         /// Enables or disables friend login notifications when a user joins the game.
@@ -56,6 +55,11 @@
         public int ItemDropChance { get; set; } = 0;
 
         /// <summary>
+        /// When enabled, 'Auto-turn to target' is limited to entities within the front view of players.
+        /// </summary>
+        public bool LimitAutoTurnToTarget { get; set; } = false;
+
+        /// <summary>
         /// Number of characters an account may create.
         /// </summary>
         public int MaxCharacters { get; set; } = 1;
@@ -81,7 +85,7 @@
         public int MaxStat { get; set; } = 255;
 
         /// <summary>
-        /// How long a player must wait before sending a trade/party/friend request after the first as been denied.
+        /// How long a player must wait before sending a trade/party/friend.
         /// </summary>
         public int RequestTimeout { get; set; } = 300000;
 
@@ -97,10 +101,13 @@
         public bool SkipCharacterSelect { get; set; } = false;
 
         /// <summary>
+        /// When enabled, 'Auto-target switching' is limited to entities within the front view of players.
+        /// </summary>
+        public bool TargetAccountDirection { get; set; } = false;
+
+        /// <summary>
         /// Distance (in tiles) between players in which a trade offer can be sent and accepted.
         /// </summary>
         public int TradeRange { get; set; } = 6;
-
     }
-
 }

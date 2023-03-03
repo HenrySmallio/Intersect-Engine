@@ -246,7 +246,7 @@ namespace Intersect.Server.Entities
         }
         public int SharedInstanceRespawnX { get; set; }
         public int SharedInstanceRespawnY { get; set; }
-        public int SharedInstanceRespawnDir { get; set; }
+        public Direction SharedInstanceRespawnDir { get; set; }
 
         [NotMapped, JsonIgnore]
         public int InstanceLives { get; set; }
@@ -1261,13 +1261,11 @@ namespace Intersect.Server.Entities
             }
         }
 
-        public override void TryAttack(
-            Entity target,
+        public override void TryAttack(Entity target,
             ProjectileBase projectile,
             SpellBase parentSpell,
             ItemBase parentItem,
-            byte projectileDir
-        )
+            Direction projectileDir)
         {
             if (!CanAttack(target, parentSpell))
             {
@@ -1626,7 +1624,7 @@ namespace Intersect.Server.Entities
         //Warping
         public override void Warp(Guid newMapId, float newX, float newY, bool adminWarp = false)
         {
-            Warp(newMapId, newX, newY, (byte)Directions.Up, adminWarp, 0, false);
+            Warp(newMapId, newX, newY, (byte)Direction.Up, adminWarp, 0, false);
         }
 
         public void AdminWarp(Guid newMapId, float newX, float newY, Guid newMapInstanceId, MapInstanceType instanceType, bool force)
@@ -1645,22 +1643,20 @@ namespace Intersect.Server.Entities
             {
                 PacketSender.SendChatMsg(this, Strings.Player.InstanceUpdate.ToString(PreviousMapInstanceId.ToString(), MapInstanceId.ToString()), ChatMessageType.Admin, CustomColors.Alerts.Info);
             }
-            Warp(newMapId, newX, newY, (byte)Directions.Up, forceInstanceChange: force);
+            Warp(newMapId, newX, newY, (byte)Direction.Up, forceInstanceChange: force);
         }
 
-        public override void Warp(
-            Guid newMapId,
+        public override void Warp(Guid newMapId,
             float newX,
             float newY,
-            byte newDir,
+            Direction newDir,
             bool adminWarp = false,
             byte zOverride = 0,
             bool mapSave = false,
             bool fromWarpEvent = false,
             MapInstanceType? mapInstanceType = null,
             bool fromLogin = false,
-            bool forceInstanceChange = false
-        )
+            bool forceInstanceChange = false)
         {
             #region shortcircuit exits
             // First, deny the warp entirely if we CAN'T, for some reason, warp to the requested instance type. ONly do this if we're not forcing a change
@@ -1678,7 +1674,7 @@ namespace Intersect.Server.Entities
             // If we are moving TO a new shared instance, update the shared respawn point (if enabled)
             if (!fromLogin && mapInstanceType == MapInstanceType.Shared && Options.Instance.Instancing.SharedInstanceRespawnInInstance && MapController.Get(newMapId) != null)
             {
-                UpdateSharedInstanceRespawnLocation(newMapId, (int)newX, (int)newY, (int)newDir);
+                UpdateSharedInstanceRespawnLocation(newMapId, (int)newX, (int)newY, newDir);
             }
 
             // Make sure we're heading to a map that exists - otherwise, to spawn you go
@@ -1808,7 +1804,7 @@ namespace Intersect.Server.Entities
                 {
                     // Will warp to spawn if we fail to create an instance for the relevant map
                     Warp(
-                        MapId, (byte)X, (byte)Y, (byte)Dir, false, (byte)Z, false, false, InstanceType, true
+                        MapId, (byte)X, (byte)Y, Dir, false, (byte)Z, false, false, InstanceType, true
                     );
                 }
             }
@@ -1822,7 +1818,7 @@ namespace Intersect.Server.Entities
         public void WarpToLastOverworldLocation(bool fromLogin)
         {
             Warp(
-                LastOverworldMapId, (byte)LastOverworldX, (byte)LastOverworldY, (byte)Dir, zOverride: (byte)Z, mapInstanceType: MapInstanceType.Overworld, fromLogin: fromLogin
+                LastOverworldMapId, (byte)LastOverworldX, (byte)LastOverworldY, Dir, zOverride: (byte)Z, mapInstanceType: MapInstanceType.Overworld, fromLogin: fromLogin
             );
         }
 
@@ -1843,7 +1839,7 @@ namespace Intersect.Server.Entities
             var mapId = Guid.Empty;
             byte x = 0;
             byte y = 0;
-            byte dir = 0;
+            Direction dir = 0;
 
             if (Options.Instance.Instancing.SharedInstanceRespawnInInstance && InstanceType == MapInstanceType.Shared && !forceClassRespawn)
             {
@@ -1857,7 +1853,7 @@ namespace Intersect.Server.Entities
                 if (Options.Instance.Instancing.MaxSharedInstanceLives <= 0) // User has not configured shared instances to have lives
                 {
                     // Warp to the start of the shared instance - no concern for life total
-                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, (Byte)SharedInstanceRespawnDir);
+                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, SharedInstanceRespawnDir);
                     return;
                 }
 
@@ -1885,7 +1881,7 @@ namespace Intersect.Server.Entities
                     }
 
                     // And warp to the instance start
-                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, (byte)SharedInstanceRespawnDir);
+                    Warp(SharedInstanceRespawnId, SharedInstanceRespawnX, SharedInstanceRespawnY, SharedInstanceRespawnDir);
                 }
                 else
                 {
@@ -1924,7 +1920,7 @@ namespace Intersect.Server.Entities
 
                     x = (byte)cls.SpawnX;
                     y = (byte)cls.SpawnY;
-                    dir = (byte)cls.SpawnDir;
+                    dir = (Direction)cls.SpawnDir;
                 }
 
                 if (mapId == Guid.Empty)
@@ -2183,7 +2179,7 @@ namespace Intersect.Server.Entities
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="dir"></param>
-        public void UpdateSharedInstanceRespawnLocation(Guid respawnMapId, int x, int y, int dir)
+        public void UpdateSharedInstanceRespawnLocation(Guid respawnMapId, int x, int y, Direction dir)
         {
             SharedInstanceRespawnId = respawnMapId;
             SharedInstanceRespawnX = x;
@@ -3014,7 +3010,7 @@ namespace Intersect.Server.Entities
                 if (itemBase.Animation != null)
                 {
                     PacketSender.SendAnimationToProximity(
-                        itemBase.Animation.Id, 1, base.Id, MapId, 0, 0, (sbyte)Dir, MapInstanceId
+                        itemBase.Animation.Id, 1, base.Id, MapId, 0, 0, Dir, MapInstanceId
                     ); //Target Type 1 will be global entity
                 }
 
@@ -5082,7 +5078,7 @@ namespace Intersect.Server.Entities
                 if (spell.CastAnimationId != Guid.Empty)
                 {
                     PacketSender.SendAnimationToProximity(
-                        spell.CastAnimationId, 1, base.Id, MapId, 0, 0, (sbyte) Dir, MapInstanceId
+                        spell.CastAnimationId, 1, base.Id, MapId, 0, 0, Dir, MapInstanceId
                     ); //Target Type 1 will be global entity
                 }
 
@@ -6013,20 +6009,20 @@ namespace Intersect.Server.Entities
                         //Turn the global event opposite of the player
                         switch (Dir)
                         {
-                            case 0:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(1);
+                            case Direction.Up:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Down);
 
                                 break;
-                            case 1:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(0);
+                            case Direction.Down:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Up);
 
                                 break;
-                            case 2:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(3);
+                            case Direction.Left:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Right);
 
                                 break;
-                            case 3:
-                                evt.Value.PageInstance.GlobalClone.ChangeDir(2);
+                            case Direction.Right:
+                                evt.Value.PageInstance.GlobalClone.ChangeDir(Direction.Left);
 
                                 break;
                         }
@@ -6471,7 +6467,7 @@ namespace Intersect.Server.Entities
             }
         }
 
-        public override int CanMove(int moveDir)
+        public override int CanMove(Direction moveDir)
         {
             //If crafting or locked by event return blocked
             if (OpenCraftingTableId != default && CraftingState != default)
@@ -6519,7 +6515,8 @@ namespace Intersect.Server.Entities
             return -1;
         }
 
-        public override void Move(int moveDir, Player forPlayer, bool dontUpdate = false, bool correction = false)
+        public override void Move(Direction moveDir, Player forPlayer, bool dontUpdate = false,
+            bool correction = false)
         {
             lock (EntityLock)
             {
@@ -6531,10 +6528,10 @@ namespace Intersect.Server.Entities
                 if (attribute != null && attribute.Type == MapAttributes.Warp)
                 {
                     var warpAtt = (MapWarpAttribute)attribute;
-                    var dir = (byte)Dir;
+                    var dir = Dir;
                     if (warpAtt.Direction != WarpDirection.Retain)
                     {
-                        dir = (byte)(warpAtt.Direction - 1);
+                        dir = (Direction)(warpAtt.Direction - 1);
                     }
 
                     MapInstanceType? instanceType = null;

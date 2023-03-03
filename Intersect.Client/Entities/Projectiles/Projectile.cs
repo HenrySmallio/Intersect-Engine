@@ -62,7 +62,7 @@ namespace Intersect.Client.Entities.Projectiles
             base.Load(packet);
             var pkt = (ProjectileEntityPacket) packet;
             ProjectileId = pkt.ProjectileId;
-            Dir = pkt.ProjectileDirection;
+            Dir = (Direction)pkt.ProjectileDirection;
             TargetId = pkt.TargetId;
             mOwner = pkt.OwnerId;
             mMyBase = ProjectileBase.Get(ProjectileId);
@@ -116,9 +116,12 @@ namespace Intersect.Client.Entities.Projectiles
         }
 
         /// <inheritdoc />
-        public override bool CanBeAttacked()
+        public override bool CanBeAttacked
         {
-            return false;
+            get
+            {
+                return false;
+            }
         }
 
         //Find out which animation data to load depending on what spawn wave we are on during projection.
@@ -155,8 +158,9 @@ namespace Intersect.Client.Entities.Projectiles
                         if (mMyBase.SpawnLocations[x, y].Directions[d] == true)
                         {
                             var s = new ProjectileSpawns(
-                                FindProjectileRotationDir(Dir, d), X + FindProjectileRotationX(Dir, x - 2, y - 2),
-                                Y + FindProjectileRotationY(Dir, x - 2, y - 2), Z, MapId, animBase,
+                                (byte)FindProjectileRotationDir(Dir, (Direction)d),
+                                (byte)(X + FindProjectileRotationX(Dir, x - 2, y - 2)),
+                                (byte)(Y + FindProjectileRotationY(Dir, x - 2, y - 2)), Z, MapId, animBase,
                                 mMyBase.Animations[spawn].AutoRotate, mMyBase, this
                             );
 
@@ -179,109 +183,205 @@ namespace Intersect.Client.Entities.Projectiles
             mSpawnTime = Timing.Global.Milliseconds + mMyBase.Delay;
         }
 
-        private int FindProjectileRotationX(int direction, int x, int y)
+        private static int FindProjectileRotationX(Direction direction, int x, int y)
         {
             switch (direction)
             {
-                case 0: //Up
+                case Direction.Up:
                     return x;
-                case 1: //Down
+                case Direction.Down:
                     return -x;
-                case 2: //Left
+                case Direction.Left:
+                case Direction.UpLeft:
+                case Direction.DownLeft:
                     return y;
-                case 3: //Right
+                case Direction.Right:
+                case Direction.UpRight:
+                case Direction.DownRight:
                     return -y;
                 default:
                     return x;
             }
         }
 
-        private int FindProjectileRotationY(int direction, int x, int y)
+        private static int FindProjectileRotationY(Direction direction, int x, int y)
         {
             switch (direction)
             {
-                case 0: //Up
+                case Direction.Up:
                     return y;
-                case 1: //Down
+                case Direction.Down:
                     return -y;
-                case 2: //Left
+                case Direction.Left:
+                case Direction.UpLeft:
+                case Direction.DownLeft:
                     return -x;
-                case 3: //Right
+                case Direction.Right:
+                case Direction.UpRight:
+                case Direction.DownRight:
                     return x;
                 default:
                     return y;
             }
         }
 
-        private int FindProjectileRotationDir(int entityDir, int projectionDir)
+        private static Direction FindProjectileRotationDir(Direction entityDir, Direction projectionDir)
         {
             switch (entityDir)
             {
-                case 0: //Up
+                case Direction.Up:
                     return projectionDir;
-                case 1: //Down
+                case Direction.Down:
                     switch (projectionDir)
                     {
-                        case 0: //Up
-                            return 1;
-                        case 1: //Down
-                            return 0;
-                        case 2: //Left
-                            return 3;
-                        case 3: //Right
-                            return 2;
-                        case 4: //UpLeft
-                            return 7;
-                        case 5: //UpRight
-                            return 6;
-                        case 6: //DownLeft
-                            return 5;
-                        case 7: //DownRight
-                            return 4;
+                        case Direction.Up:
+                            return Direction.Down;
+                        case Direction.Down:
+                            return Direction.Up;
+                        case Direction.Left:
+                            return Direction.Right;
+                        case Direction.Right:
+                            return Direction.Left;
+                        case Direction.UpLeft:
+                            return Direction.DownLeft;
+                        case Direction.UpRight:
+                            return Direction.DownRight;
+                        case Direction.DownRight:
+                            return Direction.UpLeft;
+                        case Direction.DownLeft:
+                            return Direction.UpRight;
                         default:
                             return projectionDir;
                     }
-                case 2: //Left
+                case Direction.Left:
                     switch (projectionDir)
                     {
-                        case 0: //Up
-                            return 2;
-                        case 1: //Down
-                            return 3;
-                        case 2: //Left
-                            return 1;
-                        case 3: //Right
-                            return 0;
-                        case 4: //UpLeft
-                            return 6;
-                        case 5: //UpRight
-                            return 4;
-                        case 6: //DownLeft
-                            return 7;
-                        case 7: //DownRight
-                            return 5;
+                        case Direction.Up:
+                            return Direction.Left;
+                        case Direction.Down:
+                            return Direction.Right;
+                        case Direction.Left:
+                            return Direction.Down;
+                        case Direction.Right:
+                            return Direction.Up;
+                        case Direction.UpLeft:
+                            return Direction.DownRight;
+                        case Direction.UpRight:
+                            return Direction.UpLeft;
+                        case Direction.DownRight:
+                            return Direction.DownLeft;
+                        case Direction.DownLeft:
+                            return Direction.UpRight;
                         default:
                             return projectionDir;
                     }
-                case 3: //Right
+                case Direction.Right:
                     switch (projectionDir)
                     {
-                        case 0: //Up
-                            return 3;
-                        case 1: //Down
-                            return 2;
-                        case 2: //Left
-                            return 0;
-                        case 3: //Right
-                            return 1;
-                        case 4: //UpLeft
-                            return 5;
-                        case 5: //UpRight
-                            return 7;
-                        case 6: //DownLeft
-                            return 4;
-                        case 7: //DownRight
-                            return 6;
+                        case Direction.Up:
+                            return Direction.Right;
+                        case Direction.Down:
+                            return Direction.Left;
+                        case Direction.Left:
+                            return Direction.Up;
+                        case Direction.Right:
+                            return Direction.Down;
+                        case Direction.UpLeft:
+                            return Direction.UpRight;
+                        case Direction.UpRight:
+                            return Direction.DownRight;
+                        case Direction.DownRight:
+                            return Direction.DownLeft;
+                        case Direction.DownLeft:
+                            return Direction.UpLeft;
+                        default:
+                            return projectionDir;
+                    }
+                case Direction.UpLeft:
+                    switch (projectionDir)
+                    {
+                        case Direction.Up:
+                            return Direction.UpLeft;
+                        case Direction.Down:
+                            return Direction.DownRight;
+                        case Direction.Left:
+                            return Direction.DownLeft;
+                        case Direction.Right:
+                            return Direction.UpRight;
+                        case Direction.UpLeft:
+                            return Direction.Left;
+                        case Direction.UpRight:
+                            return Direction.Up;
+                        case Direction.DownRight:
+                            return Direction.Right;
+                        case Direction.DownLeft:
+                            return Direction.Down;
+                        default:
+                            return projectionDir;
+                    }
+                case Direction.UpRight:
+                    switch (projectionDir)
+                    {
+                        case Direction.Up:
+                            return Direction.UpRight;
+                        case Direction.Down:
+                            return Direction.DownLeft;
+                        case Direction.Left:
+                            return Direction.UpLeft;
+                        case Direction.Right:
+                            return Direction.DownRight;
+                        case Direction.UpLeft:
+                            return Direction.Up;
+                        case Direction.UpRight:
+                            return Direction.Right;
+                        case Direction.DownRight:
+                            return Direction.Down;
+                        case Direction.DownLeft:
+                            return Direction.Left;
+                        default:
+                            return projectionDir;
+                    }
+                case Direction.DownLeft:
+                    switch (projectionDir)
+                    {
+                        case Direction.Up:
+                            return Direction.DownLeft;
+                        case Direction.Down:
+                            return Direction.UpRight;
+                        case Direction.Left:
+                            return Direction.DownRight;
+                        case Direction.Right:
+                            return Direction.UpLeft;
+                        case Direction.UpLeft:
+                            return Direction.Down;
+                        case Direction.UpRight:
+                            return Direction.Left;
+                        case Direction.DownRight:
+                            return Direction.Up;
+                        case Direction.DownLeft:
+                            return Direction.Right;
+                        default:
+                            return projectionDir;
+                    }
+                case Direction.DownRight:
+                    switch (projectionDir)
+                    {
+                        case Direction.Up:
+                            return Direction.DownRight;
+                        case Direction.Down:
+                            return Direction.UpLeft;
+                        case Direction.Left:
+                            return Direction.UpRight;
+                        case Direction.Right:
+                            return Direction.DownLeft;
+                        case Direction.UpLeft:
+                            return Direction.Right;
+                        case Direction.UpRight:
+                            return Direction.Down;
+                        case Direction.DownRight:
+                            return Direction.Left;
+                        case Direction.DownLeft:
+                            return Direction.Up;
                         default:
                             return projectionDir;
                     }
@@ -290,45 +390,41 @@ namespace Intersect.Client.Entities.Projectiles
             }
         }
 
-        private float GetRangeX(int direction, float range)
+        private static float GetRangeX(Direction direction, float range)
         {
-            //Left, UpLeft, DownLeft
-            if (direction == 2 || direction == 4 || direction == 6)
+            switch (direction)
             {
-                return -range;
-            }
-
-            //Right, UpRight, DownRight
-            else if (direction == 3 || direction == 5 || direction == 7)
-            {
-                return range;
-            }
-
-            //Up and Down
-            else
-            {
-                return 0;
+                case Direction.Left:
+                case Direction.UpLeft:
+                case Direction.DownLeft:
+                    return -range;
+                case Direction.Right:
+                case Direction.UpRight:
+                case Direction.DownRight:
+                    return range;
+                case Direction.Up:
+                case Direction.Down:
+                default:
+                    return 0;
             }
         }
 
-        private float GetRangeY(int direction, float range)
+        private static float GetRangeY(Direction direction, float range)
         {
-            //Up, UpLeft, UpRight
-            if (direction == 0 || direction == 4 || direction == 5)
+            switch (direction)
             {
-                return -range;
-            }
-
-            //Down, DownLeft, DownRight
-            else if (direction == 1 || direction == 6 || direction == 7)
-            {
-                return range;
-            }
-
-            //Left and Right
-            else
-            {
-                return 0;
+                case Direction.Up:
+                case Direction.UpLeft:
+                case Direction.UpRight:
+                    return -range;
+                case Direction.Down:
+                case Direction.DownLeft:
+                case Direction.DownRight:
+                    return range;
+                case Direction.Left:
+                case Direction.Right:
+                default:
+                    return 0;
             }
         }
 
@@ -371,8 +467,8 @@ namespace Intersect.Client.Entities.Projectiles
                     {
                         if (Spawns[s] != null && Maps.MapInstance.Get(Spawns[s].SpawnMapId) != null)
                         {
-                            Spawns[s].OffsetX = GetRangeX(Spawns[s].Dir, GetDisplacement(Spawns[s].SpawnTime));
-                            Spawns[s].OffsetY = GetRangeY(Spawns[s].Dir, GetDisplacement(Spawns[s].SpawnTime));
+                            Spawns[s].OffsetX = GetRangeX((Direction)Spawns[s].Dir, GetDisplacement(Spawns[s].SpawnTime));
+                            Spawns[s].OffsetY = GetRangeY((Direction)Spawns[s].Dir, GetDisplacement(Spawns[s].SpawnTime));
                             Spawns[s]
                                 .Anim.SetPosition(
                                     Maps.MapInstance.Get(Spawns[s].SpawnMapId).GetX() +
@@ -382,7 +478,8 @@ namespace Intersect.Client.Entities.Projectiles
                                     Maps.MapInstance.Get(Spawns[s].SpawnMapId).GetY() +
                                     Spawns[s].SpawnY * Options.TileHeight +
                                     Spawns[s].OffsetY +
-                                    Options.TileHeight / 2, X, Y, MapId, Spawns[s].AutoRotate ? Spawns[s].Dir : 0,
+                                    Options.TileHeight / 2, X, Y, MapId,
+                                    Spawns[s].AutoRotate ? (Direction)Spawns[s].Dir : Direction.Up,
                                     Spawns[s].Z
                                 );
 
@@ -408,8 +505,8 @@ namespace Intersect.Client.Entities.Projectiles
                         var spawnMap = Maps.MapInstance.Get(Spawns[i].MapId);
                         if (spawnMap != null)
                         {
-                            var newx = Spawns[i].X + (int) GetRangeX(Spawns[i].Dir, 1);
-                            var newy = Spawns[i].Y + (int) GetRangeY(Spawns[i].Dir, 1);
+                            var newx = Spawns[i].X + (int) GetRangeX((Direction)Spawns[i].Dir, 1);
+                            var newy = Spawns[i].Y + (int) GetRangeY((Direction)Spawns[i].Dir, 1);
                             var newMapId = Spawns[i].MapId;
                             var killSpawn = false;
 
@@ -504,7 +601,7 @@ namespace Intersect.Client.Entities.Projectiles
                             }
 
                             Spawns[i].TransmittionTimer = Timing.Global.Milliseconds +
-                                                          (long) ((float) mMyBase.Speed / (float) mMyBase.Range);
+                                                          (long) (mMyBase.Speed / (float) mMyBase.Range);
 
                             if (Spawns[i].Distance >= mMyBase.Range)
                             {

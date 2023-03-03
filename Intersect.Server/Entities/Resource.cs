@@ -68,7 +68,7 @@ namespace Intersect.Server.Entities
                 if (Base.AnimationId != Guid.Empty)
                 {
                     PacketSender.SendAnimationToProximity(
-                        Base.AnimationId, -1, Guid.Empty, MapId, (byte)X, (byte)Y, (int)Directions.Up, MapInstanceId
+                        Base.AnimationId, -1, Guid.Empty, MapId, (byte)X, (byte)Y, (int)Direction.Up, MapInstanceId
                     );
                 }
             }

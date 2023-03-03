@@ -434,55 +434,110 @@ namespace Intersect.Server.Entities.Pathfinding
             mWaitTime = timeMs + 1000;
         }
 
-        public sbyte GetMove()
+        public Direction GetMove()
         {
             if (mPath == null)
             {
-                return -1;
+                return Direction.None;
             }
 
             var enm = mPath.GetEnumerator();
             while (enm.MoveNext())
             {
-                if (enm.Current.X - Options.MapWidth == mEntity.X && enm.Current.Y - Options.MapHeight == mEntity.Y)
+                if (enm.Current.X - Options.MapWidth != mEntity.X || enm.Current.Y - Options.MapHeight != mEntity.Y)
                 {
-                    if (enm.MoveNext())
+                    continue;
+                }
+
+                if (!enm.MoveNext())
+                {
+                    continue;
+                }
+
+                var newX = enm.Current.X - Options.MapWidth;
+                var newY = enm.Current.Y - Options.MapHeight;
+
+                if (Options.Instance.MapOpts.EnableDiagonalMovement)
+                {
+                    if (mEntity.X < newX && mEntity.Y == newY)
                     {
-                        var newX = enm.Current.X - Options.MapWidth;
-                        var newY = enm.Current.Y - Options.MapHeight;
-                        if (mEntity.X < newX)
-                        {
-                            enm.Dispose();
+                        enm.Dispose();
+                        return Direction.Right;
+                    }
 
-                            return (int) Directions.Right;
-                        }
-                        else if (mEntity.X > newX)
-                        {
-                            enm.Dispose();
+                    if (mEntity.X > newX && mEntity.Y == newY)
+                    {
+                        enm.Dispose();
+                        return Direction.Left;
+                    }
 
-                            return (int) Directions.Left;
-                        }
-                        else if (mEntity.Y < newY)
-                        {
-                            enm.Dispose();
+                    if (mEntity.Y < newY && mEntity.X == newX)
+                    {
+                        enm.Dispose();
+                        return Direction.Down;
+                    }
 
-                            return (int) Directions.Down;
-                        }
-                        else if (mEntity.Y > newY)
-                        {
-                            enm.Dispose();
+                    if (mEntity.Y > newY && mEntity.X == newX)
+                    {
+                        enm.Dispose();
+                        return Direction.Up;
+                    }
 
-                            return (int) Directions.Up;
-                        }
+                    if (mEntity.Y > newY && mEntity.X > newX)
+                    {
+                        enm.Dispose();
+                        return Direction.UpLeft;
+                    }
+
+                    if (mEntity.Y > newY && mEntity.X < newX)
+                    {
+                        enm.Dispose();
+                        return Direction.UpRight;
+                    }
+
+                    if (mEntity.Y < newY && mEntity.X > newX)
+                    {
+                        enm.Dispose();
+                        return Direction.DownLeft;
+                    }
+
+                    if (mEntity.Y < newY && mEntity.X < newX)
+                    {
+                        enm.Dispose();
+                        return Direction.DownRight;
+                    }
+                }
+                else
+                {
+                    if (mEntity.X < newX)
+                    {
+                        enm.Dispose();
+                        return Direction.Right;
+                    }
+
+                    if (mEntity.X > newX)
+                    {
+                        enm.Dispose();
+                        return Direction.Left;
+                    }
+
+                    if (mEntity.Y < newY)
+                    {
+                        enm.Dispose();
+                        return Direction.Down;
+                    }
+
+                    if (mEntity.Y > newY)
+                    {
+                        enm.Dispose();
+                        return Direction.Up;
                     }
                 }
             }
 
             enm.Dispose();
-
-            return -1;
+            return Direction.None;
         }
-
     }
 
     public partial class AStarSolver : SpatialAStar

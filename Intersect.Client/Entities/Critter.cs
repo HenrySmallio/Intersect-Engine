@@ -38,11 +38,11 @@ namespace Intersect.Client.Entities
             //Determine Direction
             if (mAttribute.Direction == 0)
             {
-                Dir = (byte)Globals.Random.Next(Options.Instance.Sprites.Directions);
+                Dir = (Direction)Randomization.Next(Options.Instance.MapOpts.MovementDirections);
             }
             else
             {
-                Dir = (byte)(mAttribute.Direction - 1);
+                Dir = (Direction)(mAttribute.Direction - 1);
             }
 
             //Block Players?
@@ -61,7 +61,7 @@ namespace Intersect.Client.Entities
                             MoveRandomly();
                             break;
                         case 1: //Turn?
-                            Dir = (byte)Globals.Random.Next(Options.Instance.Sprites.Directions);
+                            Dir = (Direction)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
                             break;
 
                     }
@@ -75,78 +75,98 @@ namespace Intersect.Client.Entities
 
         private void MoveRandomly()
         {
-            MoveDir = (byte)Globals.Random.Next(Options.Instance.Sprites.Directions);
+            MoveDir = (Direction)Globals.Random.Next(Options.Instance.MapOpts.MovementDirections);
             var tmpX = (sbyte)X;
             var tmpY = (sbyte)Y;
             IEntity blockedBy = null;
 
-            if (!IsMoving && MoveTimer < Timing.Global.Milliseconds)
+            if (IsMoving || MoveTimer >= Timing.Global.Milliseconds)
             {
-                switch (MoveDir)
+                return;
+            }
+
+            var deltaX = 0;
+            var deltaY = 0;
+
+            switch (MoveDir)
+            {
+                case Direction.Up:
+                    deltaX = 0;
+                    deltaY = -1;
+                    break;
+                case Direction.Down:
+                    deltaX = 0;
+                    deltaY = 1;
+                    break;
+                case Direction.Left:
+                    deltaX = -1;
+                    deltaY = 0;
+                    break;
+                case Direction.Right:
+                    deltaX = 1;
+                    deltaY = 0;
+                    break;
+                case Direction.UpLeft:
+                    deltaX = -1;
+                    deltaY = -1;
+                    break;
+                case Direction.UpRight:
+                    deltaX = 1;
+                    deltaY = -1;
+                    break;
+                case Direction.DownLeft:
+                    deltaX = -1;
+                    deltaY = 1;
+                    break;
+                case Direction.DownRight:
+                    deltaX = 1;
+                    deltaY = 1;
+                    break;
+            }
+
+            var isBlocked = IsTileBlocked(tmpX + deltaX, tmpY + deltaY, Z, MapId, ref blockedBy, true, true,
+                mAttribute.IgnoreNpcAvoids) == -1;
+            var playerOnTile = PlayerOnTile(MapId, tmpX + deltaX, tmpY + deltaY);
+
+            if (isBlocked && tmpX + deltaX >= 0 && tmpX + deltaX < Options.MapWidth && tmpY + deltaY >= 0 &&
+                tmpY + deltaY < Options.MapHeight && (!mAttribute.BlockPlayers || !playerOnTile))
+            {
+                tmpX += (sbyte)deltaX;
+                tmpY += (sbyte)deltaY;
+                IsMoving = true;
+                Dir = MoveDir;
+
+                if (deltaX == 0)
                 {
-                    case 0: // Up
-                        if (IsTileBlocked(X, Y - 1, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && Y > 0 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X, Y - 1)))
-                        {
-                            tmpY--;
-                            IsMoving = true;
-                            Dir = 0;
-                            OffsetY = Options.TileHeight;
-                            OffsetX = 0;
-                        }
-
-                        break;
-                    case 1: // Down
-                        if (IsTileBlocked(X, Y + 1, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && Y < Options.MapHeight - 1 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X, Y + 1)))
-                        {
-                            tmpY++;
-                            IsMoving = true;
-                            Dir = 1;
-                            OffsetY = -Options.TileHeight;
-                            OffsetX = 0;
-                        }
-
-                        break;
-                    case 2: // Left
-                        if (IsTileBlocked(X - 1, Y, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && X > 0 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X - 1, Y)))
-                        {
-                            tmpX--;
-                            IsMoving = true;
-                            Dir = 2;
-                            OffsetY = 0;
-                            OffsetX = Options.TileWidth;
-                        }
-
-                        break;
-                    case 3: // Right
-                        if (IsTileBlocked(X + 1, Y, Z, MapId, ref blockedBy, true, true, mAttribute.IgnoreNpcAvoids) == -1 && X < Options.MapWidth - 1 && (!mAttribute.BlockPlayers || !PlayerOnTile(MapId, X + 1, Y)))
-                        {
-                            //If BlockPlayers then make sure there is no player here
-                            tmpX++;
-                            IsMoving = true;
-                            Dir = 3;
-                            OffsetY = 0;
-                            OffsetX = -Options.TileWidth;
-                        }
-
-                        break;
-                }
-
-                if (IsMoving)
-                {
-                    X = (byte)tmpX;
-                    Y = (byte)tmpY;
-
-                    //TryToChangeDimension();
-                    MoveTimer = Timing.Global.Milliseconds + (long)GetMovementTime();
+                    OffsetX = 0;
                 }
                 else
                 {
-                    if (MoveDir != Dir)
-                    {
-                        Dir = (byte)MoveDir;
-                    }
+                    OffsetX = deltaX > 0 ? -Options.TileWidth : Options.TileWidth;
+                }
+
+                if (deltaY == 0)
+                {
+                    OffsetY = 0;
+                }
+                else
+                {
+                    OffsetY = deltaY > 0 ? -Options.TileHeight : Options.TileHeight;
                 }
             }
+            else if (MoveDir != Dir)
+            {
+                Dir = MoveDir;
+            }
+
+            if (!IsMoving)
+            {
+                return;
+            }
+
+            X = (byte)tmpX;
+            Y = (byte)tmpY;
+            MoveTimer = Timing.Global.Milliseconds + (long)GetMovementTime();
         }
 
         public bool PlayerOnTile(Guid mapId, int x, int y)
